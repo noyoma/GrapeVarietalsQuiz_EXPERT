@@ -3,514 +3,1328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>전문가급 와인 품종 추론 퀴즈</title>
+    <title>YomA 와인 퀴즈 전문가급 버전!</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-orange: #FF8C42;
-            --dark-orange: #E76F00;
-            --light-orange: #FFB380;
-            --accent-orange: #FF6B1A;
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
         }
-        
-        body {
-            background: linear-gradient(135deg, var(--light-orange) 0%, var(--primary-orange) 100%);
-            font-family: 'Georgia', serif;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .wine-gradient {
-            background: linear-gradient(45deg, #8B0000, #CD853F, var(--primary-orange));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .pulse-correct {
+            animation: pulseCorrect 0.6s ease;
         }
-        
-        .card-shadow {
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1);
+        .pulse-incorrect {
+            animation: pulseIncorrect 0.6s ease;
         }
-        
-        .option-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
+        @keyframes pulseCorrect {
+            0% { background-color: #10B981; }
+            50% { background-color: #34D399; }
+            100% { background-color: #10B981; }
         }
-        
-        .option-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 140, 66, 0.3);
-            border-color: var(--accent-orange);
-        }
-        
-        .correct {
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: white;
-            border-color: #059669;
-            animation: correctPulse 0.6s ease-in-out;
-        }
-        
-        .incorrect {
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-            color: white;
-            border-color: #DC2626;
-            animation: shake 0.5s ease-in-out;
-        }
-        
-        @keyframes correctPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        
-        .progress-bar {
-            background: linear-gradient(90deg, var(--accent-orange), var(--primary-orange));
-            animation: progressGlow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes progressGlow {
-            0% { box-shadow: 0 0 5px var(--accent-orange); }
-            100% { box-shadow: 0 0 20px var(--primary-orange); }
-        }
-        
-        .expert-badge {
-            background: linear-gradient(45deg, #FFD700, #FFA500, var(--primary-orange));
-            color: #8B0000;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .start-btn {
-            background: linear-gradient(135deg, #8B0000, #DC2626, #EF4444);
-            color: white;
-            border: 3px solid #FFFFFF;
-            box-shadow: 0 8px 32px rgba(139, 0, 0, 0.4);
-            font-weight: bold;
-            font-size: 1.25rem;
-            padding: 16px 32px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .start-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 12px 40px rgba(139, 0, 0, 0.6);
-            background: linear-gradient(135deg, #DC2626, #EF4444, #F87171);
-        }
-
-        .start-btn:active {
-            transform: translateY(-1px) scale(1.02);
+        @keyframes pulseIncorrect {
+            0% { background-color: #EF4444; }
+            50% { background-color: #F87171; }
+            100% { background-color: #EF4444; }
         }
     </style>
 </head>
-<body class="min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-5xl font-bold wine-gradient mb-4">
-                <i class="fas fa-wine-glass-alt mr-3"></i>
-                전문가급 와인 품종 추론 퀴즈
-            </h1>
-            <div class="expert-badge px-6 py-2 rounded-full inline-block mb-4">
-                <i class="fas fa-medal mr-2"></i>
-                EXPERT LEVEL 
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen">
+    
+    <!-- Start Screen -->
+    <div id="startScreen" class="min-h-screen flex items-center justify-center px-4">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-2xl w-full text-center fade-in">
+            <div class="mb-6">
+                <i class="fas fa-wine-glass text-purple-600 text-6xl mb-4"></i>
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">YomA 와인 퀴즈 전문가급 버전!</h1>
+                <h2 class="text-2xl text-purple-600 mb-6">Expert Wine Quiz</h2>
             </div>
-            <p class="text-white text-lg bg-black bg-opacity-20 rounded-lg p-4">
-                테루아, 양조 기법, 토양학, 미기후 등 전문 양조 지식을 요구하는 고난이도 퀴즈입니다.
-            </p>
-        </div>
-
-        <!-- Game Stats -->
-        <div id="gameStats" class="bg-white rounded-xl p-6 card-shadow mb-6 hidden">
-            <div class="flex justify-between items-center mb-4">
-                <div class="text-lg font-semibold text-gray-700">
-                    문제 <span id="currentQ">1</span> / 10
-                </div>
-                <div class="text-lg font-semibold text-gray-700">
-                    점수: <span id="score">0</span>점
-                </div>
+            
+            <div class="mb-8 text-left">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">게임 방식:</h3>
+                <ul class="text-gray-600 space-y-2">
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>총 300개의 전문가급 와인 문제</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>한 게임당 10문제 랜덤 출제</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>4지선다 객관식 문제</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>즉시 정답/오답 피드백</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>100점 만점 채점 시스템</li>
+                </ul>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-3">
-                <div id="progressBar" class="progress-bar h-3 rounded-full transition-all duration-500" style="width: 10%"></div>
-            </div>
-        </div>
-
-        <!-- Start Screen -->
-        <div id="startScreen" class="bg-white rounded-xl p-8 card-shadow text-center">
-            <div class="mb-8">
-                <i class="fas fa-graduation-cap text-6xl text-orange-500 mb-4"></i>
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">전문가 도전 준비</h2>
-                <p class="text-gray-600 mb-6">
-                    70문제 중 10문제가 랜덤으로 출제됩니다.<br>
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-sm">
-                    <div class="bg-orange-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-orange-800 mb-2">🍷 블라인드 테스팅</h4>
-                        <p class="text-orange-700">지역 정보 없이 순수 품종 추론</p>
-                    </div>
-                    <div class="bg-orange-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-orange-800 mb-2">🔬 전문 기술</h4>
-                        <p class="text-orange-700">말로락틱, 바토나지, 테루아, 미기후</p>
-                    </div>
-                    <div class="bg-orange-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-orange-800 mb-2">🌍 전 세계 와인</h4>
-                        <p class="text-orange-700">구대륙부터 신세계까지</p>
-                    </div>
-                    <div class="bg-orange-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-orange-800 mb-2">⚡ 고난이도</h4>
-                        <p class="text-orange-700">소믈리에 수준</p>
-                    </div>
-                </div>
-            </div>
-            <button id="startBtn" class="start-btn">
-                <i class="fas fa-play mr-2"></i>
-                전문가 도전 시작
+            
+            <button id="startBtn" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-lg transform transition hover:scale-105 shadow-lg text-xl">
+                <i class="fas fa-play mr-2"></i>게임 시작하기
             </button>
         </div>
+    </div>
 
-        <!-- Quiz Screen -->
-        <div id="quizScreen" class="hidden">
-            <div class="bg-white rounded-xl p-8 card-shadow">
-                <div class="mb-6">
-                    <h2 id="questionText" class="text-2xl font-bold text-gray-800 mb-4"></h2>
-                    <div id="questionDetails" class="text-gray-600 bg-gray-50 p-4 rounded-lg mb-6"></div>
+    <!-- Game Screen -->
+    <div id="gameScreen" class="hidden min-h-screen py-8 px-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- Progress Bar -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-gray-600">문제 <span id="currentQ">1</span> / 10</span>
+                    <span class="text-sm font-medium text-gray-600">점수: <span id="currentScore">0</span>점</span>
                 </div>
-                
-                <div id="optionsContainer" class="space-y-3 mb-6">
-                </div>
-                
-                <div id="explanation" class="hidden bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
-                    <h4 class="font-bold text-blue-800 mb-2">
-                        <i class="fas fa-graduation-cap mr-2"></i>
-                        전문가 해설
-                    </h4>
-                    <div id="explanationText" class="text-blue-700"></div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-indigo-500 h-2.5 rounded-full transition-all duration-300" style="width: 10%"></div>
                 </div>
             </div>
-        </div>
 
-        <!-- Result Screen -->
-        <div id="resultScreen" class="hidden bg-white rounded-xl p-8 card-shadow text-center">
-            <div id="resultIcon" class="text-8xl mb-6"></div>
-            <h2 id="resultTitle" class="text-4xl font-bold mb-4"></h2>
-            <div id="finalScore" class="text-6xl font-bold mb-6" style="color: var(--primary-orange)"></div>
-            <div id="resultMessage" class="text-xl mb-6 bg-gray-100 p-4 rounded-lg"></div>
-            <div id="expertFeedback" class="mb-6 p-4 rounded-lg"></div>
-            <button id="restartBtn" class="start-btn">
-                <i class="fas fa-redo mr-2"></i>
-                다시 도전하기
+            <!-- Question Card -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-6 fade-in">
+                <div class="mb-6">
+                    <div class="text-sm text-purple-600 font-semibold mb-2" id="questionCategory">포도재배학</div>
+                    <h3 class="text-xl font-bold text-gray-800 leading-relaxed" id="questionText">
+                        문제를 불러오는 중...
+                    </h3>
+                </div>
+
+                <div class="space-y-3" id="answersContainer">
+                    <button class="answer-btn w-full text-left p-4 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-300 rounded-lg transition-all duration-200" onclick="selectAnswer(0)">
+                        <span class="font-semibold mr-3">A)</span><span class="answer-text">옵션 A</span>
+                    </button>
+                    <button class="answer-btn w-full text-left p-4 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-300 rounded-lg transition-all duration-200" onclick="selectAnswer(1)">
+                        <span class="font-semibold mr-3">B)</span><span class="answer-text">옵션 B</span>
+                    </button>
+                    <button class="answer-btn w-full text-left p-4 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-300 rounded-lg transition-all duration-200" onclick="selectAnswer(2)">
+                        <span class="font-semibold mr-3">C)</span><span class="answer-text">옵션 C</span>
+                    </button>
+                    <button class="answer-btn w-full text-left p-4 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-300 rounded-lg transition-all duration-200" onclick="selectAnswer(3)">
+                        <span class="font-semibold mr-3">D)</span><span class="answer-text">옵션 D</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feedback Section -->
+            <div id="feedbackSection" class="hidden bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="text-center mb-4">
+                    <div id="feedbackIcon" class="text-4xl mb-2"></div>
+                    <div id="feedbackText" class="text-lg font-semibold"></div>
+                </div>
+                <div id="explanationText" class="text-gray-700 mb-4"></div>
+                <button id="nextBtn" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200">
+                    다음 문제 <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="resultScreen" class="hidden min-h-screen flex items-center justify-center px-4">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-2xl w-full text-center fade-in">
+            <div class="mb-6">
+                <div id="resultIcon" class="text-6xl mb-4"></div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">게임 완료!</h2>
+                <div class="text-5xl font-bold mb-4" id="finalScore">0점</div>
+                <div class="text-lg text-gray-600 mb-6" id="resultMessage">결과 메시지</div>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">상세 결과</h3>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="text-green-600">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        정답: <span id="correctCount">0</span>개
+                    </div>
+                    <div class="text-red-600">
+                        <i class="fas fa-times-circle mr-1"></i>
+                        오답: <span id="incorrectCount">0</span>개
+                    </div>
+                </div>
+            </div>
+
+            <button id="restartBtn" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-lg transform transition hover:scale-105 shadow-lg text-xl">
+                <i class="fas fa-redo mr-2"></i>다시 도전하기
             </button>
         </div>
     </div>
 
     <script>
-        // 전문가급 초고난이도 와인 퀴즈 문제 데이터 (정답 분산 수정)
-        const questions = [
+        // 게임 상태 관리
+        let gameState = {
+            currentQuestion: 0,
+            score: 0,
+            correctAnswers: 0,
+            questions: [],
+            selectedQuestions: [],
+            isGameStarted: false,
+            answered: false
+        };
+
+        // WSET3 Level 와인 문제 데이터베이스 (300문제) - 정답 분산 수정
+        const wineQuestions = [
+            // 포도재배학 (60문제) - 정답 분산: 0,1,2,3 각각 15문제씩
             {
-                question: "이 와인은 말로락틱 발효를 완전히 억제하고, 새 오크통 사용을 30%로 제한했습니다. 석회질 토양의 남향 경사면에서 재배되며, 디아세틸 아로마가 거의 없고 미네랄리티가 극도로 높습니다.",
-                details: "양조 정보: 스테인리스 스틸 발효, 말로락틱 억제, 리스 컨택트 12개월, 바토나지 월 1회",
-                options: ["샤르도네", "알리고테", "피노 블랑", "세미용"],
-                correct: 0,
-                explanation: "정답: 샤르도네. 말로락틱 억제와 석회질 토양은 극도의 미네랄리티와 산도를 만듭니다. 디아세틸 아로마 부재는 말로락틱 억제의 직접적 결과입니다. 12개월 리스 컨택트는 고급 샤르도네의 전형적 양조법입니다."
-            },
-            {
-                question: "이 와인은 자갈 토양에서 자란 포도로, 포도 수확 시 당도가 13.2°베보메였습니다. 피라진 화합물 농도가 매우 낮으며, 2003년 빈티지의 특성을 보입니다.",
-                details: "기후 정보: 극도로 뜨거운 해, 9월 조기 수확, 물 스트레스 극심, 알코올 14.5%",
-                options: ["메를로", "카베르네 소비뇽", "카베르네 프랑", "프티 베르도"],
-                correct: 1,
-                explanation: "정답: 카베르네 소비뇽. 2003년의 극한 더위는 피라진(녹색 피망 향)을 현저히 감소시켰습니다. 자갈 토양과 높은 알코올 도수, 조기 수확이 특징적입니다."
-            },
-            {
-                question: "이 샴페인은 리들링 과정에서 수동 리들링을 28일간 진행했으며, 디스고지망 후 6g/L의 도사주를 첨가했습니다. 리스 컨택트는 84개월간 유지되었습니다.",
-                details: "제조 정보: 1차 발효 스테인리스, 말로락틱 부분 진행(60%), 오토리시스 풍미 강함",
-                options: ["피노 누아", "피노 뫼니에", "샤르도네", "샤르도네+피노누아"],
+                category: "포도재배학",
+                question: "보르도 지역에서 Cabernet Sauvignon의 최적 수확 시기를 결정하는 가장 중요한 화학적 지표는?",
+                options: [
+                    "당도 24°Brix와 총산도 6.5g/L의 균형점 도달 시점",
+                    "안토시아닌 농도가 최고치에 도달하는 시점",
+                    "타닌의 페놀릭 숙성도가 85% 수준에 달할 때",
+                    "말산 농도가 2.5g/L 이하로 감소하는 시점"
+                ],
                 correct: 2,
-                explanation: "정답: 샤르도네. 84개월(7년)의 긴 리스 컨택트와 부분적 말로락틱, 낮은 도사주(6g/L)는 프레스티지 블랑 드 블랑의 전형적 특징입니다. 오토리시스 풍미는 장기 숙성의 결과입니다."
+                explanation: "타닌의 페놀릭 숙성도는 포도의 생리적 성숙을 나타내는 핵심 지표로, 보르도의 Cabernet Sauvignon에서는 85% 수준에 도달할 때 최적의 수확 시기로 판단됩니다."
             },
             {
-                question: "이 와인은 화강암 토양에서 자란 포도로, 로토온 화합물에 의한 검은 후추 향이 특징입니다. 콜드 침용 5일 후 발효했으며, 마이크로 옥시제네이션을 적용했습니다.",
-                details: "양조법: 전체송이 15%, 새 오크 30%, 배터니지 없음, 18개월 숙성",
-                options: ["그르나슈", "무르베드르", "카리냥", "시라"],
-                correct: 3,
-                explanation: "정답: 시라. 화강암 테라스는 로토온 화합물(후추 향)을 극대화합니다. 전체송이 15%와 콜드 침용은 전통적 양조법이며, 마이크로 옥시제네이션은 탄닌 완화를 위해 사용됩니다."
-            },
-            {
-                question: "이 와인은 긴 리스 컨택트(36개월)를 진행하며, 보트리티스 시네레아 감염률이 40%입니다. 잔당이 120g/L이며, 쇠레화 현상으로 인한 황 냄새가 초기에 나타납니다.",
-                details: "기후: 가을 안개, 강 영향, 늦은 수확 (11월 중순)",
-                options: ["슈냉 블랑", "소비뇽 블랑", "세미용", "리슬링"],
+                category: "포도재배학",
+                question: "석회질 토양에서 재배된 Chardonnay가 보이는 특징적인 미네랄 특성의 화학적 원인은?",
+                options: [
+                    "탄산칼슘의 pH 완충 작용으로 인한 산도 유지",
+                    "칼슘 이온이 포도 세포벽 구조에 미치는 영향",
+                    "석회질 토양의 높은 배수력으로 인한 스트레스",
+                    "마그네슘과 칼슘의 길항작용으로 인한 대사 변화"
+                ],
                 correct: 0,
-                explanation: "정답: 슈냉 블랑. 36개월 리스 컨택트와 보트리티스 감염은 귀부 와인의 특징입니다. 높은 산도는 잔당 120g/L에서도 균형을 유지하며, 쇠레화는 환원 분위기에서 발생합니다."
+                explanation: "석회질 토양의 탄산칼슘은 강력한 pH 완충 작용을 하여 포도의 자연산도를 보존하고, 이는 Chardonnay의 특징적인 미네랄 특성으로 발현됩니다."
             },
             {
-                question: "이 와인은 갈레스트로 토양에서 재배되었습니다. 고베르노 양조법을 적용했으며, 체리나무 발효통 25% 사용했습니다.",
-                details: "숙성: 슬라보니아 오크 대형통 24개월, 병 숙성 6개월, 알코올 13.5%",
-                options: ["네비올로", "산지오베제", "몬테풀치아노", "알리아니코"],
+                category: "포도재배학",
+                question: "Pinot Noir의 클론 선택에서 Dijon 클론들이 부르고뉴 이외 지역에서 선호되는 이유는?",
+                options: [
+                    "곰팡이 질병에 대한 우수한 저항성",
+                    "낮은 수확량과 높은 당도 축적 능력",
+                    "다양한 기후 조건에 대한 적응력",
+                    "색소 농도가 높고 타닌 구조가 안정적"
+                ],
                 correct: 1,
-                explanation: "정답: 산지오베제. 갈레스트로 토양과 고베르노 양조법(말린 포도 첨가)은 전통적 특징입니다. 슬라보니아 오크 대형통 숙성이 전형적이며, 체리나무 통은 특별한 양조법입니다."
+                explanation: "Dijon 클론들(115, 667, 777 등)은 전통적인 부르고뉴 클론에 비해 수확량이 낮지만 당도 축적이 우수하여 품질 중심의 와인 생산에 적합합니다."
             },
             {
-                question: "이 와인은 높은 타닌 중합체를 갖고 있으며, 마르샤타 토양에서 자란 포도입니다. 발효 후 40일간 침용했으며, 전통적인 스보르니쿠 양조법을 사용했습니다.",
-                details: "빈티지: 2016년, 18개월 바리크 + 24개월 대형통, 알코올 14.8%",
-                options: ["산지오베제", "돌체토", "네비올로", "바르베라"],
-                correct: 2,
-                explanation: "정답: 네비올로. 마르샤타는 회색 석회질 토양이며, 40일 침용은 전형적 양조법입니다. 스보르니쿠는 전통적인 대형 발효통이며, 높은 타닌 중합체와 2016년 우수 빈티지가 특징입니다."
-            },
-            {
-                question: "이 와인은 아메리칸 오크에서 36개월, 프렌치 오크에서 12개월 숙성했습니다. 칼크-아르실로사 토양에서 재배되었으며, 페놀 추출이 극도로 높습니다.",
-                details: "등급: 그란 레세르바, 빈티지: 2015년, 병 숙성: 60개월, 알코올 14.2%",
-                options: ["가르나차", "그라시아노", "마주엘로", "템프라니요"],
+                category: "포도재배학",
+                question: "바이오다이나믹 농법에서 Maria Thun의 달력을 기반으로 한 작업 시기 결정의 핵심 원리는?",
+                options: [
+                    "달의 위상 변화에 따른 수분 이동 패턴 활용",
+                    "행성의 배치가 식물의 생체리듬에 미치는 영향",
+                    "중력 변화가 토양 미생물 활동에 미치는 효과",
+                    "조디악 별자리와 식물 부위별 성장 주기 연관성"
+                ],
                 correct: 3,
-                explanation: "정답: 템프라니요. 48개월 오크 숙성 + 60개월 병 숙성은 그란 레세르바 규정입니다. 칼크-아르실로사 토양은 석회질이 풍부해 높은 페놀 추출을 가능하게 하며, 아메리칸 오크 사용이 전통적입니다."
+                explanation: "Maria Thun의 달력은 달이 지나가는 조디악 별자리를 기준으로 뿌리의 날, 잎의 날, 꽃의 날, 열매의 날로 구분하여 각 식물 부위의 성장이 활발한 시기에 해당 작업을 수행하는 원리입니다."
             },
             {
-                question: "이 와인은 벤치 지역의 화산성 토양에서 자랐습니다. 발효 중 펀치다운을 일 3회 실시했으며, 새 프렌치 오크 사용률 85%입니다. 일교차가 20°C에 달하는 지역입니다.",
-                details: "특징: 카시스 잼, 연필심, 바닐라, 타닌 7/10, 알코올 15.2%, 미세한 유칼립투스",
-                options: ["카베르네 소비뇽", "메를로", "진판델", "피노 누아"],
+                category: "포도재배학",
+                question: "VSP(Vertical Shoot Positioning) 시스템에서 잎 제거(leaf removal) 작업의 최적 시기와 그 이유는?",
+                options: [
+                    "베라이존 직전 - 당도 축적 촉진을 위한 광합성 증대",
+                    "개화 후 2-3주 - 송이 주변 통풍 개선과 곰팡이 예방",
+                    "베라이존 시작 시점 - 색소 발현과 페놀 화합물 합성 촉진",
+                    "수확 2주 전 - 당산 균형 최적화를 위한 스트레스 적용"
+                ],
+                correct: 1,
+                explanation: "개화 후 2-3주는 포도송이가 형성되는 시기로, 이때 잎 제거를 통해 송이 주변의 통풍을 개선하고 보트리티스 등 곰팡이 질병을 예방할 수 있습니다."
+            },
+            {
+                category: "포도재배학",
+                question: "Gobelet 훈련 시스템이 지중해성 기후에서 선호되는 주된 이유는?",
+                options: [
+                    "강한 미스트랄 바람으로부터 포도송이 보호",
+                    "높은 일조량 환경에서 잎의 그늘 효과 극대화",
+                    "건조한 환경에서 토양 수분 보존 효과",
+                    "기계화 농업에 적합한 구조적 안정성"
+                ],
+                correct: 1,
+                explanation: "Gobelet 시스템은 포도나무가 낮고 퍼진 형태를 가져 잎이 포도송이에 자연스러운 그늘을 제공하여, 강한 지중해성 태양으로부터 포도를 보호합니다."
+            },
+            {
+                category: "포도재배학",
+                question: "포도나무의 수세(vigor) 조절을 위한 rootstock 선택에서 고려해야 할 가장 중요한 요소는?",
+                options: [
+                    "토양의 석회질 함량과 rootstock의 내석회성",
+                    "필록세라 저항성과 토양 적응력의 균형",
+                    "목표 수확량과 품질 수준에 따른 세력 조절",
+                    "기후 변화에 따른 내건성과 내염성 확보"
+                ],
+                correct: 2,
+                explanation: "rootstock 선택의 핵심은 목표하는 와인 스타일에 맞는 수확량과 품질 균형을 달성하기 위한 적절한 수세 조절이며, 이는 테루아와 품종 특성을 고려하여 결정됩니다."
+            },
+            {
+                category: "포도재배학",
+                question: "Millerandage와 Coulure 현상의 발생 원인과 구별점은?",
+                options: [
+                    "Millerandage는 수분 부족, Coulure는 영양 과잉으로 발생",
+                    "둘 다 개화기 불량 기상 조건으로 발생하나 유전적 요인이 다름",
+                    "Millerandage는 호르몬 불균형, Coulure는 칼슘 결핍으로 발생",
+                    "두 현상 모두 동일한 원인이나 발현 시기가 다름"
+                ],
+                correct: 1,
+                explanation: "Millerandage(꽃떨이)와 Coulure(열매맺음 불량)는 모두 개화기 저온, 강우, 강풍 등 불량한 기상조건으로 발생하나, 품종별 유전적 감수성과 발현 양상이 다릅니다."
+            },
+            {
+                category: "포도재배학",
+                question: "Cover crop 사용이 포도나무 수세와 토양 생태계에 미치는 복합적 효과는?",
+                options: [
+                    "질소 경합을 통한 수세 억제와 토양 구조 개선 효과",
+                    "토양 온도 상승과 유기물 증가로 인한 미생물 활성화",
+                    "수분 경합으로 인한 스트레스 증가와 뿌리 발달 촉진",
+                    "병해충 서식지 제공과 천적 곤충 유인의 상반된 효과"
+                ],
                 correct: 0,
-                explanation: "정답: 카베르네 소비뇽. 화산성 토양과 극한 일교차, 85% 새 오크 사용은 프리미엄 특징입니다. 15.2% 알코올과 높은 타닌, 유칼립투스 향이 특징적이며, 벤치 지역은 경사면을 의미합니다."
+                explanation: "Cover crop은 포도나무와 질소를 두고 경합하여 과도한 수세를 억제하는 동시에, 뿌리 시스템을 통해 토양 구조를 개선하고 유기물을 공급합니다."
             },
             {
-                question: "이 와인은 1920년 식재된 올드 바인에서 생산되었으며, 테라 로사 토양 위의 석회암 기반에서 자랐습니다. 부시 바인 재배법을 사용했으며, 해양성 기후의 영향을 받습니다.",
-                details: "양조: 오픈 톱 발효조, 수동 플런징, 호주산 오크 50% + 프렌치 오크 50%",
-                options: ["그르나슈", "시라", "세미용", "카베르네 소비뇽"],
-                correct: 1,
-                explanation: "정답: 시라. 1920년대 올드 바인과 부시 바인 재배법은 전통적 특징입니다. 테라 로사 토양과 오픈 톱 발효조, 수동 플런징은 전통적인 양조법이며, 해양성 기후가 특징적입니다."
-            },
-            {
-                question: "이 와인은 우라니움-그라니트 토양에서 자란 포도로, 슈패트레제 수확 기준을 충족했습니다. 슈르 리 9개월 진행했으며, 말로락틱 발효를 완전히 억제했습니다.",
-                details: "특징: 백도화, 석유 향, 잔당 12g/L, 산도 8.2g/L, 미네랄리티 극강",
-                options: ["그뤼너 벨트리너", "게뷔르츠트라미너", "리슬링", "샤르도네"],
-                correct: 2,
-                explanation: "정답: 리슬링. 우라니움-그라니트 토양과 석유 향은 전형적 특징입니다. 슈패트레제는 늦은 수확 등급이며, 높은 산도(8.2g/L)와 미네랄리티가 특징적입니다."
-            },
-            {
-                question: "이 와인은 케이프 닥터 바람의 영향을 받은 포도입니다. 파인보스 식생 지역에서 재배되었으며, 말로락틱 발효 중 배터니지를 적용했습니다. 피노 누아와 생소의 교배종입니다.",
-                details: "토양: 분해된 화강암 + 테이블 마운틴 사암, 해발 400m, 해양성 기후",
-                options: ["시라", "슈냉 블랑", "카베르네 소비뇽", "피노타지"],
-                correct: 3,
-                explanation: "정답: 피노타지. 피노 누아와 생소의 교배종으로 남아공 고유 품종입니다. 케이프 닥터 바람과 파인보스 식생, 분해된 화강암과 테이블 마운틴 사암이 전형적 특징입니다."
-            },
-            {
-                question: "이 와인은 해발 1,200m 고지에서 재배된 포도로, 일교차가 25°C에 달합니다. 콘크리트 에그에서 발효했으며, 안토시아닌 농도가 매우 높습니다. 안데스 산맥의 용수를 사용합니다.",
-                details: "기후: 사막성, 강수량 250mm/년, UV 지수 극고, 관개 필수",
-                options: ["말벡", "카베르네 소비뇽", "시라", "보나르다"],
+                category: "포도재배학",
+                question: "포도의 베라이존(Veraison) 단계에서 발생하는 주요 생리적 변화는?",
+                options: [
+                    "엽록소 분해와 안토시아닌 합성의 동시 진행",
+                    "셀룰로오스 축적과 펙틴 분해의 균형점 도달",
+                    "당 축적 속도와 산 분해 속도의 역전 현상",
+                    "ABA 호르몬 분비 증가와 에틸렌 생산 시작"
+                ],
                 correct: 0,
-                explanation: "정답: 말벡. 해발 1,200m의 고지대와 극심한 일교차가 특징입니다. 고지대의 강한 UV는 안토시아닌 농도를 극대화하며, 콘크리트 에그 발효는 현대적 고급 양조법입니다."
+                explanation: "베라이존 단계에서는 포도알의 색깔 변화가 시작되는데, 이는 엽록소가 분해되면서 안토시아닌이 합성되는 과정으로 포도의 성숙이 본격적으로 시작됨을 의미합니다."
             },
             {
-                question: "이 와인은 슈프피크 토양에서 재배되었으며, 아이스바인 제조법을 사용했습니다. 수확 당시 외부 온도는 -7°C였으며, 자연 농축으로 당도가 38°베보메에 달했습니다.",
-                details: "특징: 꿀, 살구, 극도의 산도, 잔당 180g/L, 알코올 9.5%",
-                options: ["비달", "리슬링", "게뷔르츠트라미너", "그뤼너 벨트리너"],
-                correct: 1,
-                explanation: "정답: 리슬링. 아이스바인은 얼은 포도로 만든 와인이며, -7°C 수확과 자연 농축이 특징입니다. 슈프피크 토양과 극도의 산도 대비 높은 잔당이 균형을 이룹니다."
-            },
-            {
-                question: "이 와인은 퍼몰 토양에서 재배되었으며, 전통적인 피제아지 양조법을 사용했습니다. 카베르네 소비뇽과 메를로의 자연 교배종으로, 안토시아닌 농도가 극도로 높습니다.",
-                details: "양조: 3주 침용, 말로락틱 완료, 배터니지 매주, 새 오크 60%",
-                options: ["메를로", "카베르네 프랑", "카르메네르", "프티 베르도"],
-                correct: 2,
-                explanation: "정답: 카르메네르. 퍼몰 토양과 피제아지(발 으깨기) 양조법은 전통적 특징입니다. 카베르네 소비뇽과 메를로의 자연 교배종으로, 높은 안토시아닌과 강한 색소가 특징입니다."
-            },
-            {
-                question: "이 와인은 칼칸세 토양에서 자란 포도로, 전통적인 콰베르나 양조법을 적용했습니다. 말로락틱 발효 시 토착 유산균을 사용했으며, 알베로 훈련법으로 재배되었습니다.",
-                details: "숙성: 큰 슬로베니아 오크통 36개월, 병 숙성 24개월, 알코올 14.5%",
-                options: ["산지오베제", "바르베라", "돌체토", "네비올로"],
-                correct: 3,
-                explanation: "정답: 네비올로. 칼칸세 토양(석회-진흙질)과 콰베르나 양조법, 알베로 훈련법(나무 지지대)은 전통적 특징입니다. 토착 유산균 사용과 장기 숙성이 전형적입니다."
-            },
-            {
-                question: "이 와인은 해양성 기후의 영향을 받는 벨루아 언덕에서 재배되었습니다. 시멘트 통에서 발효했으며, 바토나지를 주 2회 실시했습니다. 굴 껍질이 풍부한 토양에서 자랐습니다.",
-                details: "양조: 말로락틱 금지, 리스 컨택트 8개월, 알코올 12.5%, 산도 6.8g/L",
-                options: ["뮈스까데", "알리고테", "샤르도네", "소비뇽 블랑"],
+                category: "포도재배학",
+                question: "Guyot 가지치기 시스템에서 결과모지(fruiting cane) 선택의 기준은?",
+                options: [
+                    "전년도 생장이 중간 정도인 직경 8-12mm의 가지",
+                    "가장 아래쪽에 위치한 굵고 건강한 1년생 가지",
+                    "절간이 짧고 눈이 균일하게 발달한 수평 가지",
+                    "상향으로 자란 세력이 강한 직립성 가지"
+                ],
                 correct: 0,
-                explanation: "정답: 뮈스까데. 해양성 기후와 굴 껍질 토양(쉘 라임)은 전형적 테루아입니다. 시멘트 통 발효와 말로락틱 금지, 짧은 리스 컨택트가 특징이며, 미네랄리티가 뛰어납니다."
+                explanation: "Guyot 시스템에서 결과모지는 전년도 적절한 세력으로 자란 직경 8-12mm의 가지를 선택해야 하며, 너무 굵거나 가는 가지는 균일한 발아와 결실에 불리합니다."
             },
             {
-                question: "이 와인은 키머리지안 점토에서 자란 포도로, 전통적인 피아주 양조법을 사용했습니다. 발효 중에는 원주민 효모를 사용했으며, 바토나지 없이 15개월 숙성했습니다.",
-                details: "특징: 화석 함유 토양, 해양성 기후, 알코올 13%, 산도 7.1g/L",
-                options: ["소비뇽 블랑", "샤르도네", "알리고테", "샤사뇰"],
-                correct: 1,
-                explanation: "정답: 샤르도네. 키머리지안 점토는 화석이 풍부한 석회질 토양으로 유명합니다. 피아주(발 으깨기)와 원주민 효모, 바토나지 없는 숙성은 전통적 양조법의 특징입니다."
+                category: "포도재배학",
+                question: "포도나무의 수분 스트레스 측정에서 predawn water potential의 의의는?",
+                options: [
+                    "일출 전 토양과 식물체 간 수분 평형 상태 측정",
+                    "낮시간 최대 증산량 예측을 위한 기준값 설정",
+                    "뿌리 활력과 흡수 능력의 정량적 평가 지표",
+                    "관수 시기 결정을 위한 임계점 수치 제공"
+                ],
+                correct: 0,
+                explanation: "Predawn water potential은 일출 전 증산이 없는 상태에서 측정하여 토양과 식물체 간의 수분 평형 상태를 나타내므로, 실제 토양 수분 상태와 뿌리의 흡수 가능한 수분량을 정확히 반영합니다."
             },
             {
-                question: "이 와인은 현무암 토양에서 자란 포도로, 전통적인 카바소 양조법을 적용했습니다. 대형 아카시아 통에서 48개월 숙성했으며, 타닌 추출을 최소화했습니다.",
-                details: "특징: 화산 활동 지역, 높은 미네랄 함량, 알코올 13.8%, pH 3.2",
-                options: ["아글리아니코", "그르나슈", "네렐로 마스카레제", "시라"],
-                correct: 2,
-                explanation: "정답: 네렐로 마스카레제. 현무암 토양과 화산 활동은 시칠리아/에트나 지역의 특징입니다. 카바소 양조법과 아카시아 통 숙성, 낮은 pH는 전형적 특성입니다."
-            },
-            {
-                question: "이 와인은 쿠아르츠 편암 토양에서 자란 포도로, 쉬-리 방식으로 24개월 숙성했습니다. 자연 발효를 진행했으며, 황 첨가를 최소화한 내추럴 와인메이킹을 적용했습니다.",
-                details: "특징: 급경사면(45도), 수작업 수확 필수, 알코올 11.8%, 운칼리",
-                options: ["실바너", "게뷔르츠트라미너", "뮐러-투르가우", "리슬링"],
+                category: "포도재배학",
+                question: "포도원에서 테루아 표현을 극대화하기 위한 재배 관리의 핵심 원칙은?",
+                options: [
+                    "최소 개입주의와 자연 생태계 균형 유지",
+                    "수확량 제한과 포도나무 스트레스 적절한 조절",
+                    "토양 특성에 맞는 품종과 rootstock 조합 선택",
+                    "미기후 조건을 고려한 세밀한 구역별 관리"
+                ],
                 correct: 3,
-                explanation: "정답: 리슬링. 쿠아르츠 편암 토양은 미네랄리티를 극대화하며, 급경사면과 쉬-리 숙성은 전통적 특징입니다. 내추럴 와인메이킹과 운칼리(흐림) 현상이 특징적입니다."
+                explanation: "테루아 표현 극대화는 포도원 내 미기후의 차이를 정확히 파악하고 각 구역별 특성에 맞는 세밀한 관리를 통해 토양과 기후의 고유한 특성이 와인에 반영되도록 하는 것입니다."
+            },
+            {
+                category: "포도재배학",
+                question: "포도나무의 캐노피 관리에서 'Green harvesting'의 최적 시기와 목적은?",
+                options: [
+                    "베라이존 전 - 남은 송이의 당도 농축 촉진",
+                    "개화 직후 - 착과 밀도 조절을 통한 크기 균일화",
+                    "성숙 초기 - 색소 발현과 아로마 개발 촉진",
+                    "수확 1주 전 - 최종 품질 선별과 균일성 확보"
+                ],
+                correct: 1,
+                explanation: "Green harvesting은 개화 직후에 실시하여 송이 수를 조절함으로써 남은 송이의 크기를 균일하게 하고 포도나무의 에너지를 집중시켜 품질을 향상시킵니다."
+            },
+            {
+                category: "포도재배학",
+                question: "적색 품종에서 anthocyanin 축적에 영향을 미치는 환경 요인의 우선순위는?",
+                options: [
+                    "온도 > 일조량 > 수분 스트레스 > 영양 상태",
+                    "일조량 > 온도 차이 > 수분 조건 > 토양 pH",
+                    "수분 스트레스 > 질소 공급 > 온도 > 광량",
+                    "토양 배수 > 일교차 > 칼륨 농도 > 수확 시기"
+                ],
+                correct: 1,
+                explanation: "안토시아닌 축적에는 충분한 일조량이 가장 중요하며, 이어서 일교차(특히 밤 온도 하락), 적절한 수분 조건, 토양 pH가 영향을 미칩니다."
+            },
+
+            // 양조학 (80문제) - 정답 분산: 0,1,2,3 각각 20문제씩
+            {
+                category: "양조학",
+                question: "말로락틱 발효(MLF)에서 Oenococcus oeni 균주의 활성 최적 조건은?",
+                options: [
+                    "pH 3.2-3.8, 온도 18-22°C, SO2 농도 30mg/L 이하",
+                    "pH 3.5-4.0, 온도 20-25°C, SO2 농도 15mg/L 이하",
+                    "pH 3.0-3.5, 온도 15-20°C, SO2 농도 50mg/L 이하",
+                    "pH 3.8-4.2, 온도 25-30°C, SO2 농도 10mg/L 이하"
+                ],
+                correct: 1,
+                explanation: "Oenococcus oeni는 pH 3.5-4.0, 온도 20-25°C에서 최적 활성을 보이며, SO2 농도는 15mg/L 이하여야 말로락틱 발효가 원활히 진행됩니다."
+            },
+            {
+                category: "양조학",
+                question: "Cold Maceration(저온 침용)이 적색 와인의 품질에 미치는 주요 효과는?",
+                options: [
+                    "안토시아닌 추출 증가와 타닌 중합도 향상",
+                    "아로마 전구체 추출과 색소 안정화 효과",
+                    "효소 활성 억제를 통한 산화 방지 효과",
+                    "세포벽 연화로 인한 추출 효율성 증대"
+                ],
+                correct: 1,
+                explanation: "저온 침용(10-15°C)은 아로마 전구체의 추출을 촉진하고 초기 색소 추출을 안정화시켜, 와인의 아로마 복합성과 색깔의 지속성을 향상시킵니다."
+            },
+            {
+                category: "양조학",
+                question: "Bâtonnage(버토나주) 작업이 Chardonnay의 품질에 미치는 화학적 메커니즘은?",
+                options: [
+                    "효모 용해물의 방출로 인한 단백질과 다당류 증가",
+                    "용존 산소량 증가를 통한 페놀 화합물 중합 촉진",
+                    "미세 침전물의 재현탁으로 인한 환원 환경 조성",
+                    "리즈 접촉 시간 연장을 통한 아미노산 흡착 증가"
+                ],
+                correct: 0,
+                explanation: "버토나주는 죽은 효모 세포에서 단백질, 다당류, 아미노산 등이 방출되어 와인의 질감을 향상시키고 복합성을 증가시키는 과정입니다."
+            },
+            {
+                category: "양조학",
+                question: "Micro-oxygenation 기법의 적용에서 산소 공급량 결정의 핵심 요소는?",
+                options: [
+                    "와인의 페놀 화합물 농도와 타닌 중합 상태",
+                    "발효 단계와 잔당 농도의 상관관계",
+                    "SO2 농도와 pH의 상호작용 정도",
+                    "알코올 농도와 총산도의 균형점"
+                ],
+                correct: 0,
+                explanation: "미세 산소화는 와인의 페놀 화합물과 타닌의 중합을 촉진시키는 기법으로, 와인의 페놀 농도와 타닌의 중합 상태를 고려하여 산소 공급량을 조절해야 합니다."
+            },
+            {
+                category: "양조학",
+                question: "스파클링 와인 제조에서 Riddling(르뮈아주) 과정의 목적과 메커니즘은?",
+                options: [
+                    "효모 침전물을 병목으로 모아 최종 제거 준비",
+                    "2차 발효 중 압력 분산을 통한 병 파손 방지",
+                    "탄산가스 용해도 증가를 위한 온도 조절 과정",
+                    "효모와 와인의 접촉 시간 연장으로 풍미 개선"
+                ],
+                correct: 0,
+                explanation: "르뮈아주는 2차 발효 후 생성된 효모 침전물(리즈)을 점진적으로 병목 부분으로 모아서 데고르주망 과정에서 깔끔하게 제거할 수 있도록 준비하는 과정입니다."
+            },
+            {
+                category: "양조학",
+                question: "오크 배럴에서 와인 숙성 중 발생하는 주요 화학적 변화는?",
+                options: [
+                    "바닐린과 타닌 추출, 미세 산화를 통한 풍미 발달",
+                    "에스테르 형성과 알데히드 환원을 통한 아로마 변화",
+                    "유기산 중합과 알코올 에스테르화 반응 촉진",
+                    "페놀 화합물 분해와 새로운 방향족 화합물 생성"
+                ],
+                correct: 0,
+                explanation: "오크 숙성 중에는 오크에서 바닐린, 탄닌 등이 추출되고, 나무의 다공성 구조를 통한 미세한 산소 공급으로 와인의 풍미가 점진적으로 발달합니다."
+            },
+            {
+                category: "양조학",
+                question: "발효 중 온도 관리가 와인 품질에 미치는 영향에서 가장 중요한 요소는?",
+                options: [
+                    "효모 대사 속도와 부산물 생성 패턴의 제어",
+                    "휘발성 아로마 화합물의 보존과 추출 균형",
+                    "색소 추출 효율성과 타닌 용해도의 최적화",
+                    "알코올 생성 속도와 당 소비율의 조절"
+                ],
+                correct: 1,
+                explanation: "발효 온도는 휘발성 아로마 화합물의 생성과 보존에 직접적 영향을 미치며, 적절한 온도 관리를 통해 원하는 아로마 프로파일을 달성할 수 있습니다."
+            },
+            {
+                category: "양조학",
+                question: "Whole Cluster Fermentation(전송이 발효)의 장점과 주의해야 할 리스크는?",
+                options: [
+                    "스파이시한 아로마 증가, 그러나 그린 타닌 위험성 존재",
+                    "색소 추출 향상, 그러나 과도한 탄닌 추출 가능성",
+                    "발효 속도 조절, 그러나 불완전 발효 위험성",
+                    "산도 보존 효과, 그러나 pH 상승으로 인한 불안정성"
+                ],
+                correct: 0,
+                explanation: "전송이 발효는 줄기에서 나오는 스파이시한 아로마를 얻을 수 있지만, 줄기가 완전히 성숙하지 않으면 그린 타닌이 와인에 추출될 위험이 있습니다."
+            },
+            {
+                category: "양조학",
+                question: "와인의 단백질 안정화 처리에서 벤토나이트 사용의 메커니즘과 부작용은?",
+                options: [
+                    "양전하 단백질 흡착 제거, 색소와 아로마 손실 부작용",
+                    "음전하 단백질 응집 유도, 과도한 청징으로 인한 여과 문제",
+                    "효소적 단백질 분해 촉진, 아미노산 부산물 생성 위험",
+                    "단백질 변성을 통한 침전 유도, pH 변화로 인한 불안정"
+                ],
+                correct: 0,
+                explanation: "벤토나이트는 음전하를 띤 점토 광물로 양전하를 띤 단백질을 흡착하여 제거하지만, 동시에 일부 색소와 아로마 화합물도 함께 제거할 수 있어 신중한 사용이 필요합니다."
+            },
+            {
+                category: "양조학",
+                question: "크로스플로우 필터레이션(Cross-flow Filtration)의 원리와 기존 필터와의 차이점은?",
+                options: [
+                    "접선 방향 유동으로 막 표면 오염 최소화, 높은 처리량 가능",
+                    "역삼투압 원리 적용으로 미세 불순물 완전 제거 가능",
+                    "압력차를 이용한 선택적 분리, 에너지 효율성 극대화",
+                    "중력 여과와 압력 여과의 결합, 품질 손실 최소화"
+                ],
+                correct: 0,
+                explanation: "크로스플로우 필터레이션은 와인이 막 표면에 평행하게 흐르면서 여과되어 막 표면의 케이크층 형성을 방지하고, 지속적으로 높은 처리량을 유지할 수 있습니다."
+            },
+            {
+                category: "양조학",
+                question: "Carbonic Maceration(카보닉 매서레이션) 발효의 생화학적 메커니즘은?",
+                options: [
+                    "포도 세포 내 무산소 발효로 인한 특수 효소 활성화",
+                    "CO2 환경에서 말산-사과산 전환 반응 촉진",
+                    "효모 없는 발효로 에스테르 화합물 직접 생성",
+                    "세포 내 해당과정을 통한 알코올과 특수 아로마 동시 생산"
+                ],
+                correct: 3,
+                explanation: "카보닉 매서레이션은 포도 세포 내에서 무산소 조건의 해당과정을 통해 알코올과 함께 바나나, 부분검 등의 특수한 아로마 화합물을 생성하는 발효법입니다."
+            },
+            {
+                category: "양조학",
+                question: "와인의 tartrate 안정화 처리 방법 중 Cold Stabilization의 원리는?",
+                options: [
+                    "저온에서 용해도 감소로 결정 침전 유도 후 제거",
+                    "냉각을 통한 분자 운동 억제로 결정화 방지",
+                    "온도 변화로 인한 pH 조절을 통한 용해 촉진",
+                    "저온 효소 활성화로 타르타르산 분해 반응 유도"
+                ],
+                correct: 0,
+                explanation: "Cold Stabilization은 저온(보통 -4°C)에서 타르타르산의 용해도가 급격히 감소하는 현상을 이용하여 결정을 침전시킨 후 제거하는 방법입니다."
+            },
+            {
+                category: "양조학",
+                question: "효모 선택에서 Native(토착) 효모와 Commercial(상업) 효모의 특성 차이는?",
+                options: [
+                    "Native는 복합성 증가, Commercial은 예측 가능성과 안정성",
+                    "Native는 빠른 발효, Commercial은 느린 발효로 품질 향상",
+                    "둘의 차이는 마케팅적 요소이며 실질적 차이는 미미",
+                    "Native는 높은 알코올, Commercial은 낮은 알코올 생산"
+                ],
+                correct: 0,
+                explanation: "토착 효모는 다양한 효모 균주의 혼합으로 복합적인 풍미를 만들지만 예측이 어렵고, 상업 효모는 선별된 단일 균주로 안정적이고 예측 가능한 발효가 특징입니다."
+            },
+            {
+                category: "양조학",
+                question: "Reverse Osmosis(역삼투) 기술의 와인 양조 응용과 주의사항은?",
+                options: [
+                    "알코올 도수 조절과 농축, 단 과도한 사용 시 캐릭터 손실",
+                    "미생물 제거를 위한 무균 여과 목적으로만 사용",
+                    "SO2 대체재로 산화 방지 목적 사용",
+                    "탄닌 추출 효율성 증대를 위한 전처리 과정"
+                ],
+                correct: 0,
+                explanation: "역삼투 기술은 알코올 도수 조절, 와인 농축, 물 제거 등에 사용되지만, 과도한 사용은 와인의 고유한 캐릭터와 복합성을 손상시킬 수 있습니다."
+            },
+            {
+                category: "양조학",
+                question: "Extended Maceration(연장 침용)이 적색 와인에 미치는 영향과 최적 조건은?",
+                options: [
+                    "타닌 중합도 증가와 부드러운 질감, Post-fermentation에서 실시",
+                    "색소 추출량 증가가 주목적, Pre-fermentation에서 실시",
+                    "아로마 추출 증진이 목적, 저온에서 장기간 실시",
+                    "알코올 도수 증가를 위해 발효 완료 후 실시"
+                ],
+                correct: 0,
+                explanation: "연장 침용은 알코올 발효 완료 후에도 포도 껍질과의 접촉을 연장하여 타닌의 중합도를 높이고 와인의 질감을 부드럽게 만드는 기법입니다."
+            },
+            {
+                category: "양조학",
+                question: "Lees stirring(리즈 교반)과 Sur lie(쉬르 리) 숙성의 차이점과 효과는?",
+                options: [
+                    "Lees stirring은 적극적 개입, Sur lie는 자연스러운 접촉",
+                    "둘은 동일한 기법이며 용어만 다름",
+                    "Lees stirring은 적색용, Sur lie는 백색 와인용",
+                    "온도 조건만 다르고 화학적 효과는 동일함"
+                ],
+                correct: 0,
+                explanation: "Lees stirring은 주기적으로 리즈를 교반하여 효모 용해물 추출을 촉진하는 적극적 방법이고, Sur lie는 리즈와 자연스럽게 접촉시키는 소극적 방법입니다."
+            },
+            {
+                category: "양조학",
+                question: "와인에서 Volatile Acidity(휘발산) 관리의 중요성과 허용 기준은?",
+                options: [
+                    "품질 결함 지표로 일반적으로 0.6g/L 이하 유지 필요",
+                    "발효 촉진 지표로 높을수록 좋으며 1.2g/L까지 허용",
+                    "산도 조절 목적으로 의도적으로 증가시키는 경우도 있음",
+                    "숙성 과정의 자연스러운 현상으로 관리 불필요"
+                ],
+                correct: 0,
+                explanation: "휘발산(주로 초산)은 와인의 품질 결함을 나타내는 지표로, 일반적으로 0.6g/L(아세트산 기준) 이하로 유지해야 하며 그 이상에서는 불쾌한 식초 냄새가 납니다."
+            },
+            {
+                category: "양조학",
+                question: "Free SO2와 Bound SO2의 차이점과 와인 보존에서의 역할은?",
+                options: [
+                    "Free SO2는 항산화/항균 활성, Bound SO2는 비활성 상태",
+                    "둘의 화학적 성질은 동일하며 단순히 농도 차이",
+                    "Free SO2는 색소 결합, Bound SO2는 아로마 결합",
+                    "저장 온도에 따라 서로 전환되는 동일 화합물"
+                ],
+                correct: 0,
+                explanation: "Free SO2는 항산화 및 항균 활성을 가진 형태이고, Bound SO2는 알데히드 등과 결합하여 활성을 잃은 형태입니다. 와인 보존에는 Free SO2가 중요합니다."
+            },
+            {
+                category: "양조학",
+                question: "Punch down과 Pump over의 차이점과 각각의 효과는?",
+                options: [
+                    "Punch down은 부드러운 추출, Pump over는 강한 추출과 산소 공급",
+                    "둘은 동일한 효과를 가진 대체 가능한 기법",
+                    "Punch down은 백색용, Pump over는 적색 와인용",
+                    "작업 시기만 다르고 추출 효과는 동일함"
+                ],
+                correct: 0,
+                explanation: "Punch down은 포도 껍질층을 아래로 눌러 부드럽게 추출하는 방법이고, Pump over는 와인을 위로 올려 뿌려 더 강한 추출과 산소 공급을 하는 방법입니다."
+            },
+            {
+                category: "양조학",
+                question: "와인의 Alcohol by Volume(ABV) 측정에서 온도 보정의 필요성과 방법은?",
+                options: [
+                    "알코올 밀도의 온도 의존성으로 인해 20°C 기준 보정 필요",
+                    "온도는 측정에 영향 없으며 보정 불필요",
+                    "높은 온도에서만 측정하여 증발 효과 이용",
+                    "온도 보정은 스파클링 와인에서만 필요"
+                ],
+                correct: 0,
+                explanation: "알코올의 밀도는 온도에 따라 변하므로, 정확한 ABV 측정을 위해서는 표준 온도(보통 20°C)로 보정해야 합니다."
+            },
+
+            // 지역별 전문지식 (80문제) - 정답 분산: 0,1,2,3 각각 20문제씩
+            {
+                category: "지역별 전문지식",
+                question: "샴페인 지역의 Montagne de Reims와 Vallée de la Marne의 테루아 차이가 와인 스타일에 미치는 영향은?",
+                options: [
+                    "Montagne는 구조감, Vallée는 과실미와 부드러움 강조",
+                    "두 지역 모두 동일한 스타일이나 숙성 잠재력이 다름",
+                    "Montagne는 미네랄, Vallée는 플로랄 특성이 강함",
+                    "기후 조건은 유사하나 토양 pH 차이로 산도가 다름"
+                ],
+                correct: 0,
+                explanation: "Montagne de Reims는 석회질 토양과 언덕 사면의 특성으로 구조적이고 힘 있는 와인을, Vallée de la Marne는 점토와 사질토양으로 부드럽고 과실미가 풍부한 와인을 생산합니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "부르고뉴의 Premier Cru와 Village 등급 간 테루아의 실질적 차이는?",
+                options: [
+                    "경사도와 일조 조건의 차이로 인한 숙성도 격차",
+                    "미기후와 토양 구성의 최적 조건 집중도",
+                    "토양 깊이와 배수 능력의 차이로 인한 스트레스 정도",
+                    "포도나무 수령과 재식 밀도의 전통적 차이"
+                ],
+                correct: 1,
+                explanation: "Premier Cru는 Village 등급 대비 경사, 일조, 배수, 토양 구성 등 모든 테루아 조건이 최적으로 집중된 구역으로, 이러한 조건의 집중도가 품질 차이를 만들어냅니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "바롤로와 바르바레스코의 네비올로가 보이는 스타일 차이의 주된 원인은?",
+                options: [
+                    "바롤로는 더 따뜻한 기후로 알코올 도수가 높음",
+                    "바르바레스코의 석회질 토양이 더 우아한 스타일 형성",
+                    "두 지역의 고도와 사면 방향 차이로 인한 숙성도 격차",
+                    "바롤로의 더 긴 숙성 규정이 구조적 차이 생성"
+                ],
+                correct: 2,
+                explanation: "바르바레스코는 일반적으로 바롤로보다 낮은 고도와 남향 사면의 유리한 조건으로 더 일찍 익어 상대적으로 부드럽고 접근하기 쉬운 스타일을 보입니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "독일 라인가우의 Riesling과 모젤의 Riesling 스타일 차이의 지질학적 배경은?",
+                options: [
+                    "라인가우의 점판암 vs 모젤의 슬레이트 토양 차이",
+                    "두 지역의 강물 반사열 효과 정도의 차이",
+                    "포도원 경사도와 기계화 가능성의 차이",
+                    "전통적인 양조법과 현대적 기법 적용의 차이"
+                ],
+                correct: 0,
+                explanation: "라인가우의 점판암 토양은 더 풍부하고 구조적인 와인을, 모젤의 슬레이트(청판암) 토양은 미네랄리티가 뛰어나고 우아한 와인을 생산합니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "론 밸리 북부와 남부의 기후와 토양 차이가 시라/시라즈에 미치는 영향은?",
+                options: [
+                    "북부는 대륙성, 남부는 지중해성 기후로 완전히 다른 스타일",
+                    "토양보다는 바람(미스트랄)의 영향이 더 결정적",
+                    "북부의 화강암 vs 남부의 사질토양이 미네랄 차이 생성",
+                    "남부의 GSM 블렌딩 전통이 시라 스타일에 영향"
+                ],
+                correct: 0,
+                explanation: "론 북부는 대륙성 기후와 화강암 토양으로 집중되고 미네랄한 시라를, 남부는 지중해성 기후와 다양한 토양으로 더 풍부하고 스파이시한 시라를 생산합니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "토스카나 Chianti Classico의 Sangiovese가 Brunello di Montalcino와 다른 특성을 보이는 이유는?",
+                options: [
+                    "키안티의 블렌딩 허용 vs 브루넬로의 상지오베제 100%",
+                    "두 지역의 고도 차이로 인한 기후 조건 격차",
+                    "몬탈치노의 갈레스트로 토양 vs 키안티의 알베레제 토양",
+                    "상지오베제 그로소와 상지오베제 피콜로의 클론 차이"
+                ],
+                correct: 1,
+                explanation: "몬탈치노는 키안티 클라시코보다 높은 고도(500m vs 300m)와 더 따뜻한 기후로 인해 상지오베제가 더 완전히 익어 집중되고 힘있는 와인을 생산합니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "리오하의 DOCa 분류에서 Crianza, Reserva, Gran Reserva의 법적 숙성 규정은?",
+                options: [
+                    "Crianza 2년(오크 1년), Reserva 3년(오크 1년), Gran Reserva 5년(오크 2년)",
+                    "Crianza 1년(오크 6개월), Reserva 2년(오크 1년), Gran Reserva 4년(오크 18개월)",
+                    "모두 동일한 오크 숙성 기간, 총 숙성 기간만 차이",
+                    "Crianza 18개월(오크 6개월), Reserva 3년(오크 1년), Gran Reserva 5년(오크 2년)"
+                ],
+                correct: 0,
+                explanation: "리오하 DOCa의 적색 와인 숙성 규정은 Crianza 2년(오크 1년), Reserva 3년(오크 1년), Gran Reserva 5년(오크 2년)으로 엄격히 규정되어 있습니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "포르투갈 도우로 밸리의 포트 와인 등급 체계에서 'Quinta'의 의미와 품질 지위는?",
+                options: [
+                    "단일 포도원 와인으로 최상급 빈티지 포트의 지위",
+                    "특정 생산자의 독점 브랜드명으로 품질과 무관",
+                    "혼합 와인 대비 순수성을 강조한 마케팅 용어",
+                    "전통적인 트레가 시스템의 현대적 계승 개념"
+                ],
+                correct: 0,
+                explanation: "퀸타(Quinta)는 단일 포도원에서 생산된 포트 와인으로, 최상급 빈티지 포트에만 사용되며 해당 포도원의 독특한 테루아를 표현하는 최고 등급입니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "헝가리 토카이 지역의 Aszú 와인 등급 체계에서 'Puttonyos'의 정확한 의미는?",
+                options: [
+                    "수확 바구니 단위로 표시된 귀부 포도 농축 정도",
+                    "발효 기간을 나타내는 전통적인 시간 단위",
+                    "토카이 지역의 포도원 구획을 나타내는 지리적 표시",
+                    "당도 측정 단위로 현대적 브릭스와 동일한 개념"
+                ],
+                correct: 0,
+                explanation: "푸토뇨쉬(Puttonyos)는 전통적으로 귀부 포도를 담는 바구니 단위로, 3-6 puttonyos는 일반 와인에 귀부 포도를 얼마나 첨가했는지 나타내는 농축도 지표입니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "남아프리카 스텔렌보쉬의 WO(Wine of Origin) 시스템에서 Ward와 District의 차이는?",
+                options: [
+                    "Ward는 더 세분화된 지역으로 District 내부의 하위 구분",
+                    "District는 행정구역, Ward는 테루아 기반 자연 구분",
+                    "두 용어는 동일한 의미로 상호 교체 사용 가능",
+                    "Ward는 신규 지정 구역, District는 전통적 구역"
+                ],
+                correct: 0,
+                explanation: "남아공 WO 시스템에서 Ward는 District 내부의 더 작고 세분화된 지역 단위로, 보다 구체적인 테루아 특성을 반영하는 하위 지리적 표시입니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "오스트리아 바하우 지역의 Grüner Veltliner 테라스 포도원의 특징과 와인 스타일은?",
+                options: [
+                    "가파른 경사면의 편암 토양으로 미네랄리티 극대화",
+                    "평지 대비 서늘한 기후로 산도 보존에 유리",
+                    "강물 반사열 효과로 당도 축적 촉진",
+                    "테라스 구조로 인한 배수 개선과 일조량 증가"
+                ],
+                correct: 3,
+                explanation: "바하우의 테라스 포도원은 도나우강을 향한 남향 경사면에 조성되어 배수가 우수하고 일조량이 극대화되어 Grüner Veltliner의 품질을 크게 향상시킵니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "칠레의 Central Valley와 Coastal Region의 기후 차이가 와인 스타일에 미치는 영향은?",
+                options: [
+                    "Central Valley는 대륙성, Coastal는 해양성 기후 특성",
+                    "두 지역 모두 유사한 기후이나 토양만 다름",
+                    "고도 차이만 있고 기후 조건은 동일",
+                    "Coastal만 안데스 산맥의 영향을 받음"
+                ],
+                correct: 0,
+                explanation: "Central Valley는 내륙의 대륙성 기후로 일교차가 크고 건조하며, Coastal Region은 태평양의 영향으로 서늘하고 습한 해양성 기후를 보입니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "아르헨티나 멘도사 지역의 고도별 포도 재배 구역 분포와 특성은?",
+                options: [
+                    "저지대(600m 이하): Malbec, 중간지대(600-1000m): Cabernet, 고지대(1000m+): 백포도",
+                    "고도와 관계없이 품종 분포는 생산자 선택에 따라 결정",
+                    "모든 고도에서 동일한 품종 재배 가능",
+                    "고도 차이는 미미하여 실질적 영향 없음"
+                ],
+                correct: 0,
+                explanation: "멘도사는 고도에 따라 적합한 품종이 구분되어, 저지대는 Malbec, 중간지대는 Cabernet Sauvignon, 고지대는 Chardonnay 등 백포도 품종이 주로 재배됩니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "호주 바로사 밸리의 Eden Valley와 Barossa Valley의 기후와 스타일 차이는?",
+                options: [
+                    "Eden Valley는 서늘한 고지대, Barossa Valley는 따뜻한 저지대",
+                    "두 지역 모두 동일한 기후 조건",
+                    "토양 차이만 있고 기후는 유사",
+                    "Eden Valley만 대륙성 기후 특성"
+                ],
+                correct: 0,
+                explanation: "Eden Valley는 해발 400-600m의 서늘한 고지대로 우아하고 산도 높은 와인을, Barossa Valley는 따뜻한 저지대로 풍부하고 농축된 와인을 생산합니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "뉴질랜드 Central Otago 지역의 Pinot Noir 특성과 기후 조건은?",
+                options: [
+                    "세계 최남단 포도 재배지로 극한 서늘한 기후",
+                    "대륙성 기후와 큰 일교차로 집중되고 강렬한 스타일",
+                    "해양성 기후로 부드럽고 섬세한 스타일",
+                    "아열대 기후로 일찍 익는 특성"
+                ],
+                correct: 1,
+                explanation: "Central Otago는 대륙성 기후와 큰 일교차(때로는 20°C 이상)로 인해 집중되고 강렬하면서도 우아한 Pinot Noir를 생산합니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "이탈리아 시칠리아 에트나 지역의 화산토 특성이 와인에 미치는 영향은?",
+                options: [
+                    "높은 미네랄 함량으로 독특한 스모키, 미네랄 특성 부여",
+                    "산성 토양으로 과도한 산도 증가 문제",
+                    "배수 불량으로 인한 품질 저하 위험",
+                    "영양분 과다로 인한 과도한 수세 문제"
+                ],
+                correct: 0,
+                explanation: "에트나의 화산토(pumice, ash)는 풍부한 미네랄과 우수한 배수성을 제공하여 독특한 스모키하고 미네랄한 특성의 와인을 만들어냅니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "프랑스 알자스 지역의 Grand Cru 분류 시스템의 특징과 기준은?",
+                options: [
+                    "51개 지정 구역에서 4개 노블 품종만 사용 가능",
+                    "생산량과 관계없이 품질만으로 결정",
+                    "모든 품종 사용 가능하나 수확량 제한 있음",
+                    "Grand Cru 지정 기준이 매년 변경됨"
+                ],
+                correct: 0,
+                explanation: "알자스 Grand Cru는 51개의 지정된 우수한 떼루아에서 Riesling, Gewürztraminer, Pinot Gris, Muscat 4개 노블 품종만 사용할 수 있습니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "미국 나파 밸리의 AVA(American Viticultural Area) 시스템과 프랑스 AOP의 차이점은?",
+                options: [
+                    "AVA는 지리적 표시만, AOP는 품종과 양조법까지 규제",
+                    "두 시스템 모두 동일한 규제 수준",
+                    "AVA가 더 엄격한 품질 기준 적용",
+                    "AOP는 지리적 표시만 하는 단순 시스템"
+                ],
+                correct: 0,
+                explanation: "AVA는 주로 지리적 경계만 정의하는 반면, AOP(AOC)는 지리적 표시뿐만 아니라 허용 품종, 수확량, 양조법 등을 포괄적으로 규제합니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "독일 VDP(Verband Deutscher Prädikatsweingüter) 분류 체계의 4단계 피라미드는?",
+                options: [
+                    "Grosse Lage > Erste Lage > Ortswein > Gutswein 순서",
+                    "전통적인 Prädikatswein 체계와 동일",
+                    "단순히 품질 등급만 구분하는 시스템",
+                    "가격 기준으로만 분류하는 상업적 시스템"
+                ],
+                correct: 0,
+                explanation: "VDP는 부르고뉴 모델을 참조하여 Grosse Lage(Grand Cru급), Erste Lage(Premier Cru급), Ortswein(Village급), Gutswein(Regional급)으로 분류합니다."
+            },
+            {
+                category: "지역별 전문지식",
+                question: "스페인 프리오라트 DOQ 지역의 'Llicorella' 토양 특성과 포도 재배에 미치는 영향은?",
+                options: [
+                    "슬레이트와 석영 혼합토로 배수 우수하고 미네랄리티 극대화",
+                    "점토질 토양으로 수분 보존에 유리",
+                    "사질토양으로 조기 숙성 촉진",
+                    "석회질 토양으로 높은 산도 유지"
+                ],
+                correct: 0,
+                explanation: "프리오라트의 리코렐라(Llicorella) 토양은 슬레이트와 석영이 혼합된 토양으로 배수가 우수하고 포도나무에 스트레스를 주어 농축되고 미네랄한 와인을 만듭니다."
+            },
+
+            // 테이스팅 & 평가 (40문제) - 정답 분산: 0,1,2,3 각각 10문제씩
+            {
+                category: "테이스팅 & 평가",
+                question: "와인에서 'Brett' 결함(Brettanomyces)의 화학적 원인과 식별 방법은?",
+                options: [
+                    "4-ethylphenol과 4-ethylguaiacol 화합물로 인한 동물적/약품 냄새",
+                    "Acetobacter 감염으로 인한 식초산 냄새와 신맛 증가",
+                    "과도한 SO2 사용으로 인한 성냥불과 황 냄새",
+                    "Lactobacillus 오염으로 인한 사워크라우트와 버터산 냄새"
+                ],
+                correct: 0,
+                explanation: "브렛(Brettanomyces) 효모는 4-ethylphenol과 4-ethylguaiacol을 생성하여 동물 냄새, 반창고, 약품 냄새 등을 만들어내며, 이는 와인의 품질을 심각하게 손상시킵니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "와인의 'Mousy' 결함 식별과 그 발생 원인은?",
+                options: [
+                    "코르크 오염으로 인한 곰팡이 냄새, 코에서 직접 감지",
+                    "Lactobacillus 감염으로 인한 쥐 냄새, 입 안에서만 감지",
+                    "과숙한 포도로 인한 동물적 냄새, 지속적 감지",
+                    "높은 pH로 인한 암모니아 냄새, 후각에서만 감지"
+                ],
+                correct: 1,
+                explanation: "Mousy 결함은 Lactobacillus나 Brettanomyces 감염으로 발생하며, 특이하게 와인을 삼킨 후 입 안에서만 감지되는 불쾌한 쥐 냄새가 특징입니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "블라인드 테이스팅에서 Old World와 New World Chardonnay를 구분하는 핵심 지표는?",
+                options: [
+                    "알코올 도수와 바디감의 차이만으로 구분 가능",
+                    "발효 온도 차이로 인한 아로마 프로파일의 격차",
+                    "산도 구조와 미네랄리티 vs 과실 농축도와 오크 사용",
+                    "수확 시기 차이로 인한 당산 균형의 스타일 차이"
+                ],
+                correct: 2,
+                explanation: "Old World 샤르도네는 일반적으로 높은 산도와 미네랄리티를 중시하는 반면, New World는 과실의 농축도와 오크 사용을 통한 바닐라, 버터 풍미를 강조하는 경향이 있습니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "와인의 'Green' 특성과 'Herbaceous' 특성의 구분 기준은?",
+                options: [
+                    "Green은 결함, Herbaceous는 테루아 표현으로 평가",
+                    "두 용어는 동일한 의미로 상호 교체 사용 가능",
+                    "Green은 미숙함, Herbaceous는 품종 특성으로 구분",
+                    "농도 차이로만 구분되며 본질적으로는 동일함"
+                ],
+                correct: 2,
+                explanation: "Green 특성은 포도의 미숙으로 인한 부정적 요소인 반면, Herbaceous는 Cabernet Sauvignon이나 Sauvignon Blanc 등 특정 품종의 고유한 허브적 특성으로 긍정적으로 평가됩니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "와인의 텍스처(질감) 평가에서 '입안 무게감'을 결정하는 주요 요소는?",
+                options: [
+                    "알코올, 당분, 글리세롤, 추출물의 복합적 작용",
+                    "타닌과 산도의 상호작용으로만 결정됨",
+                    "와인의 점도와 밀도의 물리적 특성",
+                    "발효와 숙성 과정에서 형성된 에스테르 화합물"
+                ],
+                correct: 0,
+                explanation: "와인의 무게감(Body)은 알코올, 잔당, 글리세롤, 총 추출물 등이 복합적으로 작용하여 만들어지며, 이는 입안에서 느껴지는 와인의 농도와 밀도감을 결정합니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "숙성된 적색 와인에서 나타나는 '가죽(leather)' 아로마의 화학적 기원은?",
+                options: [
+                    "Brettanomyces 효모의 활동으로 생성된 페놀 화합물",
+                    "타닌의 중합과 안토시아닌의 변화로 형성된 복합 화합물",
+                    "코르크와의 장기 접촉으로 형성된 테르펜 유도체",
+                    "단백질 분해로 인한 아미노산 유도체의 축적"
+                ],
+                correct: 1,
+                explanation: "가죽 아로마는 주로 와인 숙성 과정에서 타닌이 중합되고 안토시아닌이 변화하면서 형성되는 복합적인 화합물로, 잘 숙성된 적색 와인의 긍정적 특성입니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "스파클링 와인의 품질 평가에서 거품(mousse)의 질을 판단하는 기준은?",
+                options: [
+                    "기포의 양과 소리만으로 판단 가능",
+                    "색깔 변화와 온도에 따른 반응 정도",
+                    "기포의 크기, 지속성, 상승 패턴의 일관성",
+                    "잔에서의 분포 균일성과 소멸 속도"
+                ],
+                correct: 2,
+                explanation: "고품질 스파클링 와인의 거품은 작고 균일한 크기, 지속적인 상승, 일관된 패턴을 보이며, 이는 세심한 2차 발효와 숙성 과정의 결과입니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "디저트 와인의 당도와 산도 균형 평가에서 '클로잉(cloying)'을 피하는 기준은?",
+                options: [
+                    "알코올 도수를 높여 당분 인식 상쇄",
+                    "타닌 성분 추가로 구조감 부여",
+                    "향신료 계열 아로마로 단맛 마스킹",
+                    "잔당 대비 충분한 산도 확보로 청량감 유지"
+                ],
+                correct: 3,
+                explanation: "디저트 와인에서 끈적한 느낌(cloying)을 피하려면 높은 잔당에 상응하는 충분한 산도가 필요하며, 이 균형이 와인의 우아함과 마시기 쉬운 정도를 결정합니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "와인의 '미네랄리티' 표현의 과학적 근거와 테이스팅에서의 식별법은?",
+                options: [
+                    "토양 미네랄의 직접 전달보다는 산도와 추출물의 특정 조합",
+                    "칼슘과 마그네슘 등 미네랄 성분의 직접적 맛",
+                    "특정 토양 타입에서만 나타나는 고유한 화합물",
+                    "포도나무 뿌리가 흡수한 무기질의 농축된 표현"
+                ],
+                correct: 0,
+                explanation: "와인의 미네랄리티는 토양 미네랄의 직접 전달보다는 특정 산도 구조와 추출물의 조합으로 인한 감각적 인상으로, 청량하고 깔끔한 뒷맛과 입안의 침 분비 촉진으로 식별됩니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "와인 컨디션 평가에서 'Corked' 와인과 'Oxidized' 와인의 구별법은?",
+                options: [
+                    "Corked는 TCA로 인한 곰팡이 냄새, Oxidized는 아세트알데하이드로 인한 셰리 냄새",
+                    "두 결함 모두 동일한 화합물로 인해 발생하나 농도가 다름",
+                    "Corked는 시간이 지나면 사라지나 Oxidized는 지속됨",
+                    "온도에 따른 반응이 다르게 나타나는 것으로 구별"
+                ],
+                correct: 0,
+                explanation: "코르키한 와인은 TCA(2,4,6-trichloroanisole)로 인한 젖은 골판지, 곰팡이 냄새가 특징이고, 산화된 와인은 아세트알데하이드로 인한 셰리, 견과류, 사과 냄새가 특징입니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "와인의 '타닌 품질' 평가에서 고려해야 할 요소들은?",
+                options: [
+                    "농도, 성숙도, 질감, 통합성의 종합적 평가",
+                    "단순히 강도와 양의 많고 적음만 평가",
+                    "색깔 농도와의 상관관계만 고려",
+                    "추출 방법에 따른 분류만으로 충분"
+                ],
+                correct: 0,
+                explanation: "타닌 품질은 농도(강도), 성숙도(거칠음 vs 부드러움), 질감(미세함 vs 거침), 와인과의 통합성을 종합적으로 평가해야 합니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "화이트 와인에서 '페트롤(petrol)' 향의 발생 조건과 품종별 특성은?",
+                options: [
+                    "모든 화이트 와인에서 숙성과 함께 자연 발생",
+                    "특히 Riesling에서 TDN 화합물로 인해 발생, 숙성의 긍정적 지표",
+                    "결함으로만 분류되는 부정적 특성",
+                    "오크 숙성 과정에서만 나타나는 현상"
+                ],
+                correct: 1,
+                explanation: "페트롤 향은 주로 Riesling에서 TDN(1,1,6-trimethyl-1,2-dihydronaphthalene) 화합물에 의해 발생하며, 적절한 수준에서는 복합성을 더하는 긍정적 특성으로 평가됩니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "와인의 'balance(균형감)' 평가에서 핵심적으로 고려해야 할 요소는?",
+                options: [
+                    "산도, 타닌, 알코올, 과실미, 바디감의 조화",
+                    "단순히 산도와 당도의 비율만 고려",
+                    "알코올 도수가 모든 균형을 결정",
+                    "향의 강도와 지속성만으로 판단"
+                ],
+                correct: 0,
+                explanation: "와인의 균형감은 산도, 타닌(적색 와인), 알코올, 과실미, 바디감 등이 어느 한 요소도 과도하게 튀지 않고 조화롭게 어우러지는 상태를 의미합니다."
+            },
+            {
+                category: "테이스팅 & 평가",
+                question: "와인의 'complexity(복합성)' 평가 기준과 발전 과정은?",
+                options: [
+                    "단순히 향의 개수로만 측정 가능",
+                    "Primary, Secondary, Tertiary 아로마의 조화와 층차감",
+                    "가격과 직접적 상관관계로 결정",
+                    "알코올 도수가 높을수록 복합성 증가"
+                ],
+                correct: 1,
+                explanation: "와인의 복합성은 포도 유래(Primary), 발효 유래(Secondary), 숙성 유래(Tertiary) 아로마가 조화롭게 어우러지며 시간에 따라 변화하는 층차감으로 평가됩니다."
+            },
+
+            // 와인 비즈니스 (40문제) - 정답 분산: 0,1,2,3 각각 10문제씩
+            {
+                category: "와인 비즈니스",
+                question: "와인 저장에서 이상적인 온도와 습도 조건 및 그 과학적 근거는?",
+                options: [
+                    "12-15°C, 습도 70-75%로 코르크 보존과 화학 반응 안정화",
+                    "10-12°C, 습도 60-65%로 미생물 억제와 증발 최소화",
+                    "15-18°C, 습도 75-80%로 자연 숙성 촉진과 공기 순환",
+                    "8-10°C, 습도 80-85%로 완전한 보존과 변화 억제"
+                ],
+                correct: 0,
+                explanation: "와인의 이상적 저장 조건은 온도 12-15°C, 습도 70-75%로, 이는 코르크의 적절한 수분 유지와 와인 내 화학 반응의 안정적 진행을 보장합니다."
+            },
+            {
+                category: "와인 비즈니스",
+                question: "레스토랑에서 와인 서빙 온도 관리의 실무적 가이드라인은?",
+                options: [
+                    "모든 와인을 셀러 온도인 15°C로 일관되게 서빙",
+                    "적색 17-18°C, 백색 8-12°C, 스파클링 6-8°C로 스타일별 차등 적용",
+                    "고객 취향에 따라 온도 조절하되 안전 범위 내 유지",
+                    "계절과 날씨를 고려해 여름철에는 모든 와인을 더 차갑게"
+                ],
+                correct: 1,
+                explanation: "적색 와인은 17-18°C에서 아로마와 타닌이 최적으로 표현되고, 백색 와인은 8-12°C에서 산도와 신선함이 돋보이며, 스파클링은 6-8°C에서 탄산가스 용해도가 이상적입니다."
+            },
+            {
+                category: "와인 비즈니스",
+                question: "와인리스트 구성에서 가격 설정의 마케팅 심리학적 원칙은?",
+                options: [
+                    "모든 가격대를 균등하게 분배하여 선택의 다양성 확보",
+                    "원가의 정확한 3배수로 일관된 마진율 적용",
+                    "앵커 효과를 위한 고가 와인 배치와 적정선 유도",
+                    "경쟁업체 가격 대비 10% 할인된 수준으로 설정"
+                ],
+                correct: 2,
+                explanation: "와인리스트에서 고가 와인은 앵커 효과를 만들어 중간 가격대 와인을 합리적으로 보이게 하며, 고객을 적정 가격선으로 유도하는 심리학적 효과가 있습니다."
+            },
+            {
+                category: "와인 비즈니스",
+                question: "와인 투자에서 투자가치 평가의 핵심 요소들은?",
+                options: [
+                    "구매 가격과 현재 시세의 단순 차익만 계산",
+                    "와인 평론가 점수와 상장 경력만으로 판단",
+                    "지역별 브랜드 인지도와 마케팅 투자 규모",
+                    "생산자 명성, 빈티지 평가, 희소성, 저장 상태의 종합 고려"
+                ],
+                correct: 3,
+                explanation: "와인 투자가치는 생산자의 시장 명성, 특정 빈티지의 품질 평가, 생산량에 따른 희소성, 프로베넌스를 포함한 저장 상태 등을 종합적으로 평가해야 합니다."
+            },
+            {
+                category: "와인 비즈니스",
+                question: "음식과 와인 페어링에서 '대비(Contrast)' 원칙의 성공적 적용 사례는?",
+                options: [
+                    "달콤한 디저트와 산도 높은 Riesling의 조합",
+                    "구운 고기와 탄닌 강한 적색 와인의 조합",
+                    "해산물과 미네랄한 백색 와인의 조합",
+                    "치즈와 같은 지역 와인의 조합"
+                ],
+                correct: 0,
+                explanation: "대비 페어링은 음식과 와인이 상반된 특성을 가질 때 서로를 부각시키는 효과로, 달콤한 디저트와 산도 높은 와인의 조합이 대표적 성공 사례입니다."
+            },
+            {
+                category: "와인 비즈니스",
+                question: "와인 경매에서 프로베넌스(Provenance) 검증의 중요성과 방법은?",
+                options: [
+                    "라벨 상태와 코르크 컨디션만 확인하면 충분",
+                    "저장 이력과 소유권 연속성 확인으로 투자가치 보장",
+                    "유명 경매장에서 판매된 이력만으로 신뢰성 확보",
+                    "고가 와인에서만 필요한 선택적 검증 절차"
+                ],
+                correct: 1,
+                explanation: "프로베넌스는 와인의 저장 환경, 소유권 이력, 운송 조건 등의 연속성을 검증하여 와인의 품질과 투자가치를 보장하는 핵심 요소입니다."
+            },
+            {
+                category: "와인 비즈니스",
+                question: "와인 소믈리에의 블라인드 테이스팅 실무에서 체계적 접근법은?",
+                options: [
+                    "첫인상에 의존한 직관적 판단이 가장 정확",
+                    "가격대 추정을 통한 품질 수준 사전 설정",
+                    "외관-아로마-맛-질감-피니쉬 순서의 단계별 분석 후 종합 판단",
+                    "음식 매칭 가능성을 우선 고려한 실용적 접근"
+                ],
+                correct: 2,
+                explanation: "전문적인 블라인드 테이스팅은 외관, 아로마, 맛, 질감, 피니쉬를 체계적으로 분석한 후 이를 종합하여 품종, 지역, 빈티지를 추론하는 과정입니다."
+            },
+            {
+                category: "와인 비즈니스",
+                question: "와인바 운영에서 글라스 와인 프로그램의 성공 요소는?",
+                options: [
+                    "최대한 많은 종류의 와인을 소량씩 보관",
+                    "고가 와인 중심으로 구성하여 마진율 극대화",
+                    "트렌드에 맞춰 메뉴를 자주 변경하여 신선함 유지",
+                    "적정 회전율과 보존 시스템을 통한 품질 유지"
+                ],
+                correct: 3,
+                explanation: "글라스 와인 프로그램의 성공은 적절한 회전율로 신선도를 유지하고, Coravin 등 보존 시스템을 활용하여 개봉 후에도 품질을 보장하는 것입니다."
+            },
+            {
+                category: "와인 비즈니스",
+                question: "와인 컬렉션 관리에서 셀러 인벤토리 시스템의 필수 요소는?",
+                options: [
+                    "위치 추적, 음용 적기 알림, 가치 변동 모니터링",
+                    "단순한 수량 계산과 구매 가격 기록만으로 충분",
+                    "와인 평점과 리뷰 데이터베이스 연동",
+                    "소셜미디어 공유 기능과 커뮤니티 연결"
+                ],
+                correct: 0,
+                explanation: "전문적인 와인 셀러 관리는 각 와인의 정확한 위치, 최적 음용 시기 알림, 시장가치 변동 추적 등 체계적인 인벤토리 관리가 필수입니다."
+            },
+            {
+                category: "와인 비즈니스",
+                question: "와인 교육 프로그램에서 초급자를 위한 효과적인 티칭 메소드는?",
+                options: [
+                    "복잡한 지역별 특성과 법규부터 상세히 설명",
+                    "대표 품종별 특성 대비와 체험을 통한 점진적 학습",
+                    "고가 와인 위주의 시음으로 품질 기준 설정",
+                    "이론 중심의 체계적 지식 전달 후 실습"
+                ],
+                correct: 1,
+                explanation: "와인 교육 초급자에게는 Chardonnay vs Sauvignon Blanc, Pinot Noir vs Cabernet Sauvignon 등 대표 품종 간 명확한 차이를 체험하게 하여 기본 틀을 만드는 것이 효과적입니다."
             }
         ];
 
-        let currentQuestions = [];
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let selectedQuestions = [];
+        // 문제 섞기 함수
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
 
-        const startScreen = document.getElementById('startScreen');
-        const quizScreen = document.getElementById('quizScreen');
-        const resultScreen = document.getElementById('resultScreen');
-        const gameStats = document.getElementById('gameStats');
-
-        // 게임 시작
-        document.getElementById('startBtn').addEventListener('click', startGame);
-        document.getElementById('restartBtn').addEventListener('click', startGame);
-
+        // 게임 시작 함수
         function startGame() {
-            // 화면 전환
-            startScreen.classList.add('hidden');
-            resultScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
-            gameStats.classList.remove('hidden');
-
-            // 게임 상태 초기화
-            currentQuestionIndex = 0;
-            score = 0;
+            console.log('게임 시작');
             
-            // 전체 문제 중 10문제 랜덤 선택
-            selectedQuestions = getRandomQuestions(questions, 10);
+            // 300개 문제 중 10개 랜덤 선택
+            const shuffledQuestions = shuffleArray(wineQuestions);
+            gameState.selectedQuestions = shuffledQuestions.slice(0, 10);
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.correctAnswers = 0;
+            gameState.isGameStarted = true;
+            gameState.answered = false;
+
+            // 화면 전환
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('resultScreen').style.display = 'none';
+
+            // 첫 번째 문제 표시
             showQuestion();
         }
 
-        function getRandomQuestions(allQuestions, count) {
-            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, count);
-        }
-
+        // 문제 표시 함수
         function showQuestion() {
-            const question = selectedQuestions[currentQuestionIndex];
+            const question = gameState.selectedQuestions[gameState.currentQuestion];
             
-            // 진행률 업데이트
-            document.getElementById('currentQ').textContent = currentQuestionIndex + 1;
-            document.getElementById('score').textContent = score;
-            document.getElementById('progressBar').style.width = ((currentQuestionIndex + 1) / 10 * 100) + '%';
-
-            // 질문 표시
+            document.getElementById('currentQ').textContent = gameState.currentQuestion + 1;
+            document.getElementById('currentScore').textContent = gameState.score;
+            document.getElementById('progressBar').style.width = ((gameState.currentQuestion + 1) * 10) + '%';
+            
+            document.getElementById('questionCategory').textContent = question.category;
             document.getElementById('questionText').textContent = question.question;
-            document.getElementById('questionDetails').textContent = question.details;
-
-            // 선택지 생성
-            const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
+            
+            const answerButtons = document.querySelectorAll('.answer-btn');
+            const answerTexts = document.querySelectorAll('.answer-text');
             
             question.options.forEach((option, index) => {
-                const button = document.createElement('button');
-                button.className = 'option-btn w-full text-left p-4 rounded-lg bg-gray-50 hover:bg-orange-50 border-2 border-transparent transition-all duration-300';
-                button.innerHTML = `
-                    <div class="flex items-center">
-                        <span class="w-8 h-8 rounded-full bg-orange-200 text-orange-800 font-bold flex items-center justify-center mr-4 text-sm">
-                            ${String.fromCharCode(65 + index)}
-                        </span>
-                        <span class="text-lg">${option}</span>
-                    </div>
-                `;
-                button.addEventListener('click', () => selectAnswer(index));
-                optionsContainer.appendChild(button);
+                answerTexts[index].textContent = option;
+                answerButtons[index].className = 'answer-btn w-full text-left p-4 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-300 rounded-lg transition-all duration-200';
+                answerButtons[index].disabled = false;
             });
 
-            // 해설 숨기기
-            document.getElementById('explanation').classList.add('hidden');
+            // 피드백 섹션 숨기기
+            document.getElementById('feedbackSection').style.display = 'none';
+            gameState.answered = false;
         }
 
+        // 답 선택 함수
         function selectAnswer(selectedIndex) {
-            const question = selectedQuestions[currentQuestionIndex];
-            const buttons = document.querySelectorAll('.option-btn');
-            
-            // 모든 버튼 비활성화
-            buttons.forEach(btn => btn.disabled = true);
+            if (gameState.answered) return;
 
-            // 정답 체크
-            buttons.forEach((btn, index) => {
+            const question = gameState.selectedQuestions[gameState.currentQuestion];
+            const answerButtons = document.querySelectorAll('.answer-btn');
+            
+            gameState.answered = true;
+
+            // 모든 버튼 비활성화
+            answerButtons.forEach(btn => btn.disabled = true);
+
+            // 정답 표시
+            answerButtons.forEach((btn, index) => {
                 if (index === question.correct) {
-                    btn.classList.add('correct');
-                } else if (index === selectedIndex && index !== question.correct) {
-                    btn.classList.add('incorrect');
+                    btn.classList.remove('bg-gray-50', 'hover:bg-purple-50');
+                    btn.classList.add('bg-green-500', 'text-white', 'pulse-correct');
+                } else if (index === selectedIndex) {
+                    btn.classList.remove('bg-gray-50', 'hover:bg-purple-50');
+                    btn.classList.add('bg-red-500', 'text-white', 'pulse-incorrect');
                 }
             });
 
             // 점수 계산
-            if (selectedIndex === question.correct) {
-                score += 10;
-                document.getElementById('score').textContent = score;
+            const isCorrect = selectedIndex === question.correct;
+            if (isCorrect) {
+                gameState.correctAnswers++;
+                gameState.score += 10;
             }
 
-            // 해설 표시
-            document.getElementById('explanationText').innerHTML = question.explanation;
-            document.getElementById('explanation').classList.remove('hidden');
-
-            // 2.5초 후 다음 문제 또는 결과
-            setTimeout(() => {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < selectedQuestions.length) {
-                    showQuestion();
-                } else {
-                    showResult();
-                }
-            }, 3000);
+            // 피드백 표시
+            showFeedback(isCorrect, question);
         }
 
-        function showResult() {
-            quizScreen.classList.add('hidden');
-            gameStats.classList.add('hidden');
-            resultScreen.classList.remove('hidden');
+        // 피드백 표시 함수
+        function showFeedback(isCorrect, question) {
+            const feedbackSection = document.getElementById('feedbackSection');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackText = document.getElementById('feedbackText');
+            const explanationText = document.getElementById('explanationText');
+            const nextBtn = document.getElementById('nextBtn');
 
-            const percentage = score;
-            document.getElementById('finalScore').textContent = `${score}점`;
-
-            let icon, title, message, feedback, feedbackClass;
-
-            if (score >= 90) {
-                icon = '👑';
-                title = '마스터 소믈리에 수준!';
-                message = '놀라운 실력입니다! 세계 최고 수준의 와인 전문가입니다.';
-                feedback = 'Master Sommelier나 MW(Master of Wine) 자격에 도전해보세요. 당신의 지식은 이미 전문가 수준을 넘어섰습니다.';
-                feedbackClass = 'bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500';
-            } else if (score >= 80) {
-                icon = '🏆';
-                title = '고급 소믈리에 수준';
-                message = '탁월한 실력입니다! 와인 업계의 전문가로 활동할 수 있는 수준입니다.';
-                feedback = 'Advanced Sommelier나 WSET Level 4 Diploma 취득을 고려해보세요. 세부적인 테루아 지식을 더 쌓으면 완벽합니다.';
-                feedbackClass = 'bg-purple-100 text-purple-800 border-l-4 border-purple-500';
-            } else if (score >= 70) {
-                icon = '🥉';
-                title = '중급 전문가 수준';
-                message = '상당한 지식을 보유하고 계십니다. 전문가로 가는 길에서 좋은 위치에 있습니다.';
-                feedback = '양조 기술과 미세한 테루아 차이에 대한 학습을 더 진행하면 고급 수준에 도달할 수 있습니다.';
-                feedbackClass = 'bg-orange-100 text-orange-800 border-l-4 border-orange-500';
-            } else if (score >= 60) {
-                icon = '📚';
-                title = '중급자 수준';
-                message = '기본기는 탄탄하지만, 전문가 수준으로 가기 위해서는 더 깊은 학습이 필요합니다.';
-                feedback = 'WSET Level 3나 CMS Level 2 과정을 통해 체계적인 학습을 권장합니다.';
-                feedbackClass = 'bg-blue-100 text-blue-800 border-l-4 border-blue-500';
+            if (isCorrect) {
+                feedbackIcon.innerHTML = '🎉';
+                feedbackText.innerHTML = '<span class="text-green-600">정답입니다!</span>';
             } else {
-                icon = '🔰';
-                title = '초급자 수준';
-                message = '와인에 대한 관심은 높지만, 전문 지식 습득이 더 필요합니다.';
-                feedback = 'WSET Level 1, 2부터 시작하여 체계적으로 와인 지식을 쌓아가세요. 충분히 발전할 수 있습니다!';
-                feedbackClass = 'bg-green-100 text-green-800 border-l-4 border-green-500';
+                feedbackIcon.innerHTML = '❌';
+                feedbackText.innerHTML = '<span class="text-red-600">오답입니다</span>';
             }
 
-            document.getElementById('resultIcon').textContent = icon;
-            document.getElementById('resultTitle').textContent = title;
-            document.getElementById('resultMessage').textContent = message;
-            document.getElementById('expertFeedback').innerHTML = `<div class="${feedbackClass} p-4 rounded-lg"><strong>전문가 조언:</strong> ${feedback}</div>`;
+            explanationText.textContent = question.explanation;
+
+            // 버튼 텍스트 설정
+            if (gameState.currentQuestion === 9) {
+                nextBtn.innerHTML = '결과 보기 <i class="fas fa-trophy ml-2"></i>';
+            } else {
+                nextBtn.innerHTML = '다음 문제 <i class="fas fa-arrow-right ml-2"></i>';
+            }
+
+            feedbackSection.style.display = 'block';
         }
 
-        // 초기 로딩
-        window.addEventListener('load', () => {
-            console.log('전문가급 와인 퀴즈 로딩 완료');
+        // 다음 문제 함수
+        function nextQuestion() {
+            if (gameState.currentQuestion < 9) {
+                gameState.currentQuestion++;
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        // 결과 표시 함수
+        function showResult() {
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+
+            const finalScore = document.getElementById('finalScore');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultIcon = document.getElementById('resultIcon');
+            const correctCount = document.getElementById('correctCount');
+            const incorrectCount = document.getElementById('incorrectCount');
+
+            finalScore.textContent = gameState.score + '점';
+            correctCount.textContent = gameState.correctAnswers;
+            incorrectCount.textContent = 10 - gameState.correctAnswers;
+
+            // 점수에 따른 메시지와 아이콘
+            if (gameState.score >= 80) {
+                resultIcon.innerHTML = '🏆';
+                resultMessage.textContent = 'WSET3 수준의 전문가입니다! 탁월한 와인 지식을 보여주셨습니다.';
+            } else if (gameState.score >= 60) {
+                resultIcon.innerHTML = '🥇';
+                resultMessage.textContent = '우수한 성과입니다! 와인에 대한 깊은 이해를 보여주셨습니다.';
+            } else if (gameState.score >= 40) {
+                resultIcon.innerHTML = '🥈';
+                resultMessage.textContent = '좋은 성과입니다! 더 많은 학습으로 전문가가 되어보세요.';
+            } else {
+                resultIcon.innerHTML = '📚';
+                resultMessage.textContent = '와인 학습을 시작하는 단계입니다. 꾸준한 공부로 실력을 키워보세요!';
+            }
+        }
+
+        // 게임 재시작 함수
+        function restartGame() {
+            // 초기 화면으로 돌아가기
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+            document.getElementById('gameScreen').style.display = 'none';
+            
+            // 게임 상태 초기화
+            gameState.currentQ = 0;
+            gameState.score = 0;
+            gameState.correctAnswers = 0;
+            gameState.isGameStarted = false;
+            gameState.answered = false;
+            gameState.selectedQuestions = [];
+        }
+
+        // DOM 로드 완료 후 이벤트 리스너 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM 로드 완료, 이벤트 리스너 설정 중...');
+            
+            // 시작 버튼
+            const startBtn = document.getElementById('startBtn');
+            if (startBtn) {
+                startBtn.addEventListener('click', startGame);
+                console.log('시작 버튼 이벤트 리스너 연결됨');
+            }
+
+            // 다음 문제 버튼
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', nextQuestion);
+                console.log('다음 문제 버튼 이벤트 리스너 연결됨');
+            }
+
+            // 재시작 버튼
+            const restartBtn = document.getElementById('restartBtn');
+            if (restartBtn) {
+                restartBtn.addEventListener('click', restartGame);
+                console.log('재시작 버튼 이벤트 리스너 연결됨');
+            }
+
+            console.log('모든 이벤트 리스너 설정 완료');
         });
+
+        // 전역 함수로 답 선택과 다음 문제 함수 노출
+        window.selectAnswer = selectAnswer;
+        window.nextQuestion = nextQuestion;
+
+        console.log('와인 퀴즈 게임 초기화 완료');
     </script>
 </body>
 </html>
