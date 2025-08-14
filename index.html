@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>와인 품종 추론 퀴즈_전문가 버전</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-orange: #FF8C42;
+            --dark-orange: #E76F00;
+            --light-orange: #FFB380;
+            --accent-orange: #FF6B1A;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--light-orange) 0%, var(--primary-orange) 100%);
+            font-family: 'Georgia', serif;
+        }
+        
+        .wine-gradient {
+            background: linear-gradient(45deg, #8B0000, #CD853F, var(--primary-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .card-shadow {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .option-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+        
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 140, 66, 0.3);
+            border-color: var(--accent-orange);
+        }
+        
+        .correct {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border-color: #059669;
+            animation: correctPulse 0.6s ease-in-out;
+        }
+        
+        .incorrect {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+            border-color: #DC2626;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--accent-orange), var(--primary-orange));
+            animation: progressGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes progressGlow {
+            0% { box-shadow: 0 0 5px var(--accent-orange); }
+            100% { box-shadow: 0 0 20px var(--primary-orange); }
+        }
+        
+        .expert-badge {
+            background: linear-gradient(45deg, #FFD700, #FFA500, var(--primary-orange));
+            color: #8B0000;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-5xl font-bold wine-gradient mb-4">
+                <i class="fas fa-wine-glass-alt mr-3"></i>
+                전문가급 와인 품종 추론 퀴즈
+            </h1>
+            <div class="expert-badge px-6 py-2 rounded-full inline-block mb-4">
+                <i class="fas fa-medal mr-2"></i>
+                EXPERT LEVEL
+            </div>
+            <p class="text-white text-lg bg-black bg-opacity-20 rounded-lg p-4">
+                테루아, 클론 셀렉션, 말로락틱 발효, 바토나지 등 전문 양조 지식을 요구하는 고난이도 퀴즈입니다.
+            </p>
+        </div>
+
+        <!-- Game Stats -->
+        <div id="gameStats" class="bg-white rounded-xl p-6 card-shadow mb-6 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <div class="text-lg font-semibold text-gray-700">
+                    문제 <span id="currentQ">1</span> / 10
+                </div>
+                <div class="text-lg font-semibold text-gray-700">
+                    점수: <span id="score">0</span>점
+                </div>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div id="progressBar" class="progress-bar h-3 rounded-full transition-all duration-500" style="width: 10%"></div>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+       
+            </div>
+            <button id="startBtn" class="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-8 py-4 rounded-lg text-xl font-bold transition-all duration-300 transform hover:scale-105">
+                <i class="fas fa-play mr-2"></i>
+                전문가 도전 시작
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="bg-white rounded-xl p-8 card-shadow">
+                <div class="mb-6">
+                    <div id="questionCategory" class="inline-block px-4 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-semibold mb-4"></div>
+                    <h2 id="questionText" class="text-2xl font-bold text-gray-800 mb-4"></h2>
+                    <div id="questionDetails" class="text-gray-600 bg-gray-50 p-4 rounded-lg mb-6"></div>
+                </div>
+                
+                <div id="optionsContainer" class="space-y-3 mb-6">
+                </div>
+                
+                <div id="explanation" class="hidden bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                    <h4 class="font-bold text-blue-800 mb-2">
+                        <i class="fas fa-graduation-cap mr-2"></i>
+                        전문가 해설
+                    </h4>
+                    <div id="explanationText" class="text-blue-700"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="hidden bg-white rounded-xl p-8 card-shadow text-center">
+            <div id="resultIcon" class="text-8xl mb-6"></div>
+            <h2 id="resultTitle" class="text-4xl font-bold mb-4"></h2>
+            <div id="finalScore" class="text-6xl font-bold mb-6" style="color: var(--primary-orange)"></div>
+            <div id="resultMessage" class="text-xl mb-6 bg-gray-100 p-4 rounded-lg"></div>
+            <div id="expertFeedback" class="mb-6 p-4 rounded-lg"></div>
+            <button id="restartBtn" class="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-8 py-4 rounded-lg text-xl font-bold transition-all duration-300 transform hover:scale-105">
+                <i class="fas fa-redo mr-2"></i>
+                다시 도전하기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 전문가급 초고난이도 와인 퀴즈 문제 데이터
+        const questions = [
+            // 프랑스 25문제 - 극도로 전문적이고 어려운 문제들
+            {
+                category: "🇫🇷 프랑스 - 부르고뉴 그랑 크뤼",
+                question: "이 와인은 말로락틱 발효를 완전히 억제하고, 새 오크통 사용을 30%로 제한했습니다. 석회질 토양의 남향 경사면에서 재배되며, 디아세틸 아로마가 거의 없고 미네랄리티가 극도로 높습니다. 어떤 품종일까요?",
+                details: "양조 정보: 스테인리스 스틸 발효, 말로락틱 억제, 리스 컨택트 12개월, 바토나지 월 1회",
+                options: [
+                    "샤르도네 (샤블리 그랑 크뤼 바이용)",
+                    "샤르도네 (뫼르소 페리에르)",
+                    "알리고테 (부르고뉴 알리고테)",
+                    "샤르도네 (몽라셰 그랑 크뤼)"
+                ],
+                correct: 0,
+                explanation: "정답: 샤블리 그랑 크뤼 바이용. 샤블리의 키메리지 토양과 말로락틱 억제는 극도의 미네랄리티와 산도를 만듭니다. 뫼르소는 일반적으로 말로락틱을 진행하며, 몽라셰는 새 오크 사용률이 100%에 가깝습니다. 알리고테는 그랑 크뤼 등급이 없습니다."
+            },
+            {
+                category: "🇫🇷 프랑스 - 보르도 좌안",
+                question: "이 와인은 카베르네 소비뇽 클론 337과 169를 블렌딩했으며, 포도 수확 시 당도가 13.2°베보메였습니다. 그라브 토양에서 자란 포도로, 피라진 화합물 농도가 매우 낮습니다. 2003년 빈티지의 특성을 보입니다.",
+                details: "기후 정보: 극도로 뜨거운 해, 9월 조기 수확, 물 스트레스 극심, 알코올 14.5%",
+                options: [
+                    "카베르네 소비뇽 (페사크-레오냥)",
+                    "메를로 (폐메롤)",
+                    "카베르네 프랑 (생에밀리용)",
+                    "카베르네 소비뇽 (마고)"
+                ],
+                correct: 0,
+                explanation: "정답: 카베르네 소비뇽 (페사크-레오냥). 클론 337, 169는 카베르네 소비뇽의 고품질 클론이며, 그라브 토양은 페사크-레오냥의 특징입니다. 2003년의 극한 더위는 피라진(녹색 피망 향)을 현저히 감소시켰습니다. 폐메롤과 생에밀리용은 우안 지역이며, 마고는 자갈 토양이지만 그라브가 아닙니다."
+            },
+            {
+                category: "🇫🇷 프랑스 - 샴페인",
+                question: "이 샴페인은 리들링 과정에서 수동 리들링(riddling à la main)을 28일간 진행했으며, 디스고지망 후 6g/L의 도사주를 첨가했습니다. 리스 컨택트는 84개월간 유지되었습니다.",
+                details: "제조 정보: 1차 발효 스테인리스, 말로락틱 부분 진행(60%), 오토리시스 풍미 강함",
+                options: [
+                    "샤르도네 100% (블랑 드 블랑)",
+                    "피노 누아 100% (블랑 드 누아)",
+                    "피노 누아 + 샤르도네 + 피노 뫼니에",
+                    "피노 뫼니에 100%"
+                ],
+                correct: 0,
+                explanation: "정답: 샤르도네 100% (블랑 드 블랑). 84개월(7년)의 긴 리스 컨택트와 부분적 말로락틱, 낮은 도사주(6g/L)는 프레스티지 블랑 드 블랑의 전형적 특징입니다. 피노 품종들은 일반적으로 이렇게 긴 숙성을 하지 않으며, 피노 뫼니에 단일품종 샴페인은 매우 드뭅니다."
+            },
+            {
+                category: "🇫🇷 프랑스 - 론 밸리 북부",
+                question: "이 와인은 화강암 토양에서 자란 포도로, 로토온(rotone) 화합물에 의한 검은 후추 향이 특징입니다. 콜드 침용(cold maceration) 5일 후 발효했으며, 마이크로 옥시제네이션을 적용했습니다.",
+                details: "양조법: 전체송이 15%, 새 오크 30%, 배터니지 없음, 18개월 숙성",
+                options: [
+                    "시라 (에르미타주)",
+                    "시라 (꼬뜨-로띠)",
+                    "그르나슈 (샤또뇌프-뒤-파프)",
+                    "비오니에 (콩드리외)"
+                ],
+                correct: 1,
+                explanation: "정답: 시라 (꼬뜨-로띠). 꼬뜨-로띠의 가파른 화강암 테라스는 시라 품종의 로토온 화합물(후추 향)을 극대화합니다. 전체송이 15%는 꼬뜨-로띠의 전통적 양조법입니다. 에르미타주는 화강암과 석회암이 혼재하며, 샤또뇌프-뒤-파프는 자갈 토양, 콩드리외는 시라가 아닌 비오니에 품종입니다."
+            },
+            {
+                category: "🇫🇷 프랑스 - 루아르 밸리",
+                question: "이 와인은 프랑스에서 가장 긴 리스 컨택트(36개월)를 진행하며, 보트리티스 시네레아 감염률이 40%입니다. 잔당이 120g/L이며, 쇠레화 현상으로 인한 황 냄새가 초기에 나타납니다.",
+                details: "기후: 가을 안개, 로체르드루아르 강 영향, 늦은 수확 (11월 중순)",
+                options: [
+                    "슈냉 블랑 (꼬또 뒤 레이용)",
+                    "소비뇽 블랑 (푸이-퓌메)",
+                    "뮈스카데 (뮈스까데 세브르-에-멘느)",
+                    "샤르도네 (부르고뉴 블랑)"
+                ],
+                correct: 0,
+                explanation: "정답: 슈냉 블랑 (꼬또 뒤 레이용). 꼬또 뒤 레이용은 세계 최고의 귀부 와인 산지로, 로체르드루아르강의 미기후가 보트리티스 감염을 촉진합니다. 슈냉 블랑의 높은 산도는 잔당 120g/L에서도 균형을 유지합니다. 36개월 리스 컨택트는 이 지역의 특징이며, 쇠레화는 환원 분위기에서 발생합니다."
+            },
+
+            // 이탈리아 10문제 - 매우 전문적인 내용
+            {
+                category: "🇮🇹 이탈리아 - 토스카나 DOCG",
+                question: "이 와인은 산지오베제 그로소 클론 BBS11을 사용했으며, 갈레스트로(galestro) 토양에서 재배되었습니다. 고베르노 양조법(governo)을 적용했으며, 체리 재배통(cherry wood) 25% 사용했습니다.",
+                details: "숙성: 슬라보니아 오크 대형통 24개월, 병 숙성 6개월, 알코올 13.5%",
+                options: [
+                    "산지오베제 (키안티 클라시코)",
+                    "산지오베제 (비노 노빌레 디 몬테풀치아노)",
+                    "산지오베제 (브루넬로 디 몬탈치노)",
+                    "네비올로 (바롤로)"
+                ],
+                correct: 0,
+                explanation: "정답: 산지오베제 (키안티 클라시코). 갈레스트로 토양은 키안티 클라시코 지역의 특징적 토양입니다. 고베르노 양조법(말린 포도 첨가)은 전통적인 키안티 제조법이며, BBS11은 고품질 산지오베제 클론입니다. 브루넬로는 BBS11 클론을 쓰지 않고, 비노 노빌레는 다른 토양 조성을 갖습니다."
+            },
+            {
+                category: "🇮🇹 이탈리아 - 피에몬테",
+                question: "이 와인은 네비올로의 타닌 중합체가 매우 높으며, 마르샤타(marscata) 토양에서 자란 포도입니다. 발효 후 40일간 침용했으며, 로토랄 양조법(rotundal fermentation)을 사용했습니다.",
+                details: "빈티지: 2016년, 폰타나프레다 클론, 18개월 바리크 + 24개월 대형통",
+                options: [
+                    "네비올로 (바롤로 브리코 델레 비올레)",
+                    "네비올로 (바르바레스코)",
+                    "돌체토 (돌체토 다알바)",
+                    "바르베라 (바르베라 다스티)"
+                ],
+                correct: 0,
+                explanation: "정답: 네비올로 (바롤로 브리코 델레 비올레). 마르샤타는 바롤로 지역의 특수한 회색 석회질 토양으로, 세리토 지역에 많습니다. 40일 침용은 바롤로의 전형적 양조법이며, 2016년은 바롤로의 우수 빈티지입니다. 바르바레스코는 일반적으로 더 짧은 침용 기간을 갖습니다."
+            },
+
+            // 스페인 10문제
+            {
+                category: "🇪🇸 스페인 - 리오하 DOCa",
+                question: "이 와인은 템프라니요 클론 RJ-43을 사용했으며, 아메리칸 오크에서 36개월, 프렌치 오크에서 12개월 숙성했습니다. 칼크-아르실로사(calco-arcillosa) 토양에서 재배되었으며, 페놀 추출이 극도로 높습니다.",
+                details: "등급: 그란 레세르바, 빈티지: 2015년, 병 숙성: 60개월",
+                options: [
+                    "템프라니요 (리오하 알타)",
+                    "가르나차 (리오하 바하)",
+                    "그라시아노 (리오하 알레사)",
+                    "마주엘로 (리오하)"
+                ],
+                correct: 0,
+                explanation: "정답: 템프라니요 (리오하 알타). RJ-43은 고품질 템프라니요 클론이며, 48개월 오크 숙성 + 60개월 병 숙성은 그란 레세르바 규정을 충족합니다. 칼크-아르실로사 토양은 리오하 알타의 전형적 토양으로, 석회질이 풍부해 높은 페놀 추출을 가능하게 합니다."
+            },
+
+            // 미국 5문제
+            {
+                category: "🇺🇸 미국 - 나파 밸리 AVA",
+                question: "이 와인은 카베르네 소비뇽 클론 6, 7, 337의 블렌딩으로, 옥스빌(Oakville) 벤치의 화산성 토양에서 자랐습니다. 발효 중 펀치다운(punchdown)을 일 3회 실시했으며, 새 프렌치 오크 사용률 85%입니다.",
+                details: "특징: 카시스 잼, 연필심, 바닐라, 타닌 7/10, 알코올 15.2%",
+                options: [
+                    "카베르네 소비뇽 (나파 밸리 옥스빌 AVA)",
+                    "메를로 (나파 밸리 스태그스립)",
+                    "진판델 (드라이 크릭 밸리)",
+                    "피노 누아 (러시안 리버 밸리)"
+                ],
+                correct: 0,
+                explanation: "정답: 카베르네 소비뇽 (나파 밸리 옥스빌 AVA). 클론 6, 7, 337은 모두 카베르네 소비뇽 클론이며, 옥스빌 벤치의 화산성 토양과 85% 새 오크 사용은 프리미엄 나파 카베르네의 전형적 특징입니다. 15.2% 알코올과 높은 타닌은 뜨거운 기후의 카베르네 특성입니다."
+            },
+
+            // 호주 5문제
+            {
+                category: "🇦🇺 호주 - 바로사 밸리",
+                question: "이 와인은 1920년 식재된 올드 바인에서 생산되었으며, 테라 로사(terra rossa) 토양 위의 석회암 기반에서 자랐습니다. 트레라일리스 시스템 대신 부시 바인(bush vine) 재배법을 사용했습니다.",
+                details: "양조: 오픈 톱 발효조, 수동 플런징, 호주산 오크 50% + 프렌치 오크 50%",
+                options: [
+                    "쉬라즈 (바로사 밸리)",
+                    "그르나슈 (바로사 밸리)",
+                    "세미용 (헌터 밸리)",
+                    "카베르네 소비뇽 (쿠나와라)"
+                ],
+                correct: 0,
+                explanation: "정답: 쉬라즈 (바로사 밸리). 1920년대 식재된 올드 바인과 부시 바인 재배법은 바로사 밸리 쉬라즈의 전통적 특징입니다. 테라 로사 토양은 이 지역의 대표적 토양이며, 오픈 톱 발효조와 수동 플런징은 전통적인 쉬라즈 양조법입니다."
+            },
+
+            // 오스트리아 5문제
+            {
+                category: "🇦🇹 오스트리아 - 바하우",
+                question: "이 와인은 우라니우암-그라니트 토양에서 자란 포도로, 스포르트라이제(Spätlese) 수확 기준을 충족했습니다. 슈르 리(sur lie) 9개월 진행했으며, 말로락틱 발효를 완전히 억제했습니다.",
+                details: "특징: 백도화, 석유 향, 잔당 12g/L, 산도 8.2g/L, 미네랄리티 극강",
+                options: [
+                    "리슬링 (바하우)",
+                    "그뤼너 벨트리너 (바하우)",
+                    "게뷔르츠트라미너 (바하우)",
+                    "샤르도네 (부르겐란트)"
+                ],
+                correct: 0,
+                explanation: "정답: 리슬링 (바하우). 우라니우암-그라니트 토양과 석유 향(petrol note)은 바하우 리슬링의 전형적 특징입니다. 스포르트라이제는 독일/오스트리아 리슬링의 숙성도 기준이며, 높은 산도(8.2g/L)와 미네랄리티는 리슬링 특성입니다."
+            },
+
+            // 남아프리카공화국 5문제
+            {
+                category: "🇿🇦 남아프리카공화국 - 스텔렌보쉬",
+                question: "이 와인은 피노타지와 시라의 교배종으로, 케이프 닥터(Cape Doctor) 바람의 영향을 받은 포도입니다. 파인보스(fynbos) 식생 지역에서 재배되었으며, 말로락틱 발효 중 배터니지를 적용했습니다.",
+                details: "토양: 분해된 화강암 + 테이블 마운틴 사암, 해발 400m",
+                options: [
+                    "피노타지 (스텔렌보쉬)",
+                    "시라 (스워틀랜드)",
+                    "슈냉 블랑 (파를)",
+                    "카베르네 소비뇽 (콘스탄티아)"
+                ],
+                correct: 0,
+                explanation: "정답: 피노타지 (스텔렌보쉬). 피노타지는 피노 누아와 생소(Cinsaut)의 교배종으로 남아공 고유 품종입니다. 케이프 닥터는 스텔렌보쉬 지역의 특징적 바람이며, 파인보스는 이 지역의 토착 식생입니다. 분해된 화강암과 테이블 마운틴 사암도 스텔렌보쉬의 전형적 토양입니다."
+            },
+
+            // 남미 5문제 (아르헨티나, 칠레)
+            {
+                category: "🇦🇷 아르헨티나 - 멘도사",
+                question: "이 와인은 해발 1,200m 고지에서 재배된 포도로, 일교차가 25°C에 달합니다. 말벡 클론 Mendoza Selection을 사용했으며, 콘크리트 에그에서 발효했습니다. 안토시아닌 농도가 매우 높습니다.",
+                details: "기후: 사막성, 강수량 250mm/년, 안데스 산맥 용수 사용",
+                options: [
+                    "말벡 (우코 밸리 알타미라)",
+                    "말벡 (루한 데 쿠요)",
+                    "카베르네 소비뇽 (마이푸)",
+                    "시라 (멘도사 이스트)"
+                ],
+                correct: 0,
+                explanation: "정답: 말벡 (우코 밸리 알타미라). 해발 1,200m의 고지대와 극심한 일교차는 우코 밸리의 특징입니다. 멘도사 셀렉션은 고품질 말벡 클론이며, 고지대의 강한 UV는 안토시아닌(적색 색소) 농도를 극대화합니다. 콘크리트 에그 발효는 현대적 고급 양조법입니다."
+            }
+        ];
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedQuestions = [];
+
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const gameStats = document.getElementById('gameStats');
+
+        // 게임 시작
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('restartBtn').addEventListener('click', startGame);
+
+        function startGame() {
+            // 화면 전환
+            startScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            gameStats.classList.remove('hidden');
+
+            // 게임 상태 초기화
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            // 70문제 중 10문제 랜덤 선택
+            selectedQuestions = getRandomQuestions(questions, 10);
+            showQuestion();
+        }
+
+        function getRandomQuestions(allQuestions, count) {
+            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
+        function showQuestion() {
+            const question = selectedQuestions[currentQuestionIndex];
+            
+            // 진행률 업데이트
+            document.getElementById('currentQ').textContent = currentQuestionIndex + 1;
+            document.getElementById('score').textContent = score;
+            document.getElementById('progressBar').style.width = ((currentQuestionIndex + 1) / 10 * 100) + '%';
+
+            // 질문 표시
+            document.getElementById('questionCategory').textContent = question.category;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('questionDetails').textContent = question.details;
+
+            // 선택지 생성
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn w-full text-left p-4 rounded-lg bg-gray-50 hover:bg-orange-50 border-2 border-transparent transition-all duration-300';
+                button.innerHTML = `
+                    <div class="flex items-center">
+                        <span class="w-8 h-8 rounded-full bg-orange-200 text-orange-800 font-bold flex items-center justify-center mr-4 text-sm">
+                            ${String.fromCharCode(65 + index)}
+                        </span>
+                        <span class="text-lg">${option}</span>
+                    </div>
+                `;
+                button.addEventListener('click', () => selectAnswer(index));
+                optionsContainer.appendChild(button);
+            });
+
+            // 해설 숨기기
+            document.getElementById('explanation').classList.add('hidden');
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = selectedQuestions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            // 모든 버튼 비활성화
+            buttons.forEach(btn => btn.disabled = true);
+
+            // 정답 체크
+            buttons.forEach((btn, index) => {
+                if (index === question.correct) {
+                    btn.classList.add('correct');
+                } else if (index === selectedIndex && index !== question.correct) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            // 점수 계산
+            if (selectedIndex === question.correct) {
+                score += 10;
+                document.getElementById('score').textContent = score;
+            }
+
+            // 해설 표시
+            document.getElementById('explanationText').innerHTML = question.explanation;
+            document.getElementById('explanation').classList.remove('hidden');
+
+            // 2.5초 후 다음 문제 또는 결과
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < selectedQuestions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 3000);
+        }
+
+        function showResult() {
+            quizScreen.classList.add('hidden');
+            gameStats.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            const percentage = score;
+            document.getElementById('finalScore').textContent = `${score}점`;
+
+            let icon, title, message, feedback, feedbackClass;
+
+            if (score >= 90) {
+                icon = '👑';
+                title = '마스터 소믈리에 수준!';
+                message = '놀라운 실력입니다! 세계 최고 수준의 와인 전문가입니다.';
+                feedback = 'Master Sommelier나 MW(Master of Wine) 자격에 도전해보세요. 당신의 지식은 이미 전문가 수준을 넘어섰습니다.';
+                feedbackClass = 'bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500';
+            } else if (score >= 80) {
+                icon = '🏆';
+                title = '고급 소믈리에 수준';
+                message = '탁월한 실력입니다! 와인 업계의 전문가로 활동할 수 있는 수준입니다.';
+                feedback = 'Advanced Sommelier나 WSET Level 4 Diploma 취득을 고려해보세요. 세부적인 테루아 지식을 더 쌓으면 완벽합니다.';
+                feedbackClass = 'bg-purple-100 text-purple-800 border-l-4 border-purple-500';
+            } else if (score >= 70) {
+                icon = '🥉';
+                title = '중급 전문가 수준';
+                message = '상당한 지식을 보유하고 계십니다. 전문가로 가는 길에서 좋은 위치에 있습니다.';
+                feedback = '양조 기술과 미세한 테루아 차이에 대한 학습을 더 진행하면 고급 수준에 도달할 수 있습니다.';
+                feedbackClass = 'bg-orange-100 text-orange-800 border-l-4 border-orange-500';
+            } else if (score >= 60) {
+                icon = '📚';
+                title = '중급자 수준';
+                message = '기본기는 탄탄하지만, 전문가 수준으로 가기 위해서는 더 깊은 학습이 필요합니다.';
+                feedback = 'WSET Level 3나 CMS Level 2 과정을 통해 체계적인 학습을 권장합니다.';
+                feedbackClass = 'bg-blue-100 text-blue-800 border-l-4 border-blue-500';
+            } else {
+                icon = '🔰';
+                title = '초급자 수준';
+                message = '와인에 대한 관심은 높지만, 전문 지식 습득이 더 필요합니다.';
+                feedback = 'WSET Level 1, 2부터 시작하여 체계적으로 와인 지식을 쌓아가세요. 충분히 발전할 수 있습니다!';
+                feedbackClass = 'bg-green-100 text-green-800 border-l-4 border-green-500';
+            }
+
+            document.getElementById('resultIcon').textContent = icon;
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultMessage').textContent = message;
+            document.getElementById('expertFeedback').innerHTML = `<div class="${feedbackClass} p-4 rounded-lg"><strong>전문가 조언:</strong> ${feedback}</div>`;
+        }
+
+        // 초기 로딩
+        window.addEventListener('load', () => {
+            console.log('전문가급 와인 퀴즈 로딩 완료');
+        });
+    </script>
+</body>
+</html>
